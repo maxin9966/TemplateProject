@@ -1,0 +1,40 @@
+//
+//  PrefixHeader.pch
+//  MagicMusicPlayer
+//
+//  Created by MA on 15/1/25.
+//  Copyright (c) 2015年 antsmen. All rights reserved.
+//
+
+#ifndef MagicMusicPlayer_PrefixHeader_pch
+#define MagicMusicPlayer_PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+
+#import "MyCommon.h"
+#import "HttpRequest.h"
+#import "FileLoad.h"
+//#import "ReactiveCocoa.h"
+
+#endif
+
+/**
+ 
+ key
+ 
+ */
+#define kUDFirstOpenTime @"FirstOpenTime"           //首次打开的时间（时间戳）
+
+/**
+ 
+ block
+ 
+ */
+typedef void(^BooleanBlock)(BOOL success,NSError* error);
+typedef void(^ArrayBlock)(NSArray* array,NSError* error);
+typedef void(^DictionaryBlock)(NSDictionary* dict,NSError* error);
+typedef void(^ObjectBlock)(id object,NSError* error);
