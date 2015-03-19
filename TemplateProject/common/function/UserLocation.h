@@ -18,10 +18,10 @@
 //是否允许定位
 + (BOOL)locationServicesEnabled;
 
-//实时更新坐标
+//更新坐标
 - (void)startUpdate;
 
-//结束实时更新
+//停止更新坐标
 - (void)stopUpdate;
 
 @end

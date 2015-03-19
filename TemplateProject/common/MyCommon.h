@@ -11,6 +11,8 @@
 #import "PUAudioManager.h"
 #import "UIView+HUD.h"
 #import "MyTimer.h"
+#import "PUImageManager.h"
+#import "UIImageView+Cache.h"
 
 /**
  
@@ -51,6 +53,9 @@
 
 //音频管理器
 + (PUAudioManager*)audioManager;
+
+//图片管理器
++ (PUImageManager*)imageManager;
 
 //save userDefault
 + (BOOL)saveDataToUserDefault:(id)data WithKey:(NSString *)key;

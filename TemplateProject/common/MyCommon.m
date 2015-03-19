@@ -16,9 +16,20 @@
     static PUAudioManager *puAudioManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        puAudioManager = [[PUAudioManager alloc] initWithNamespace:@"PUAudioCache"];
+        puAudioManager = [[PUAudioManager alloc] initWithNamespace:@"MXAudioCache"];
     });
     return puAudioManager;
+}
+
+//图片管理器
++ (PUImageManager*)imageManager
+{
+    static PUImageManager *puImageManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        puImageManager = [[PUImageManager alloc] initWithNamespace:@"MXImageCache"];
+    });
+    return puImageManager;
 }
 
 //save userDefault
@@ -183,7 +194,7 @@
             block();
         }
     }else{
-        //显示一次之后永不提示
+        //显示一次之后永不重复
         if(!date){
             [MyCommon saveDataToUserDefault:nowDate WithKey:key];
             block();

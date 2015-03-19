@@ -20,7 +20,7 @@
 
 - (instancetype)initWithNamespace:(NSString*)ns;
 
-//音频下载
+//音频下载并缓存
 - (PUFileDownloadOperation*)downloadAudioWithUrl:(NSURL*)url
                                         progress:(DownloaderProgressBlock)progressBlock
                                        completed:(DownloaderCompletionBlock)completedBlock;

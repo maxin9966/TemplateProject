@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F41BBD01ABAAF8100F46FE8 /* UIImageView+Cache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F41BBCF1ABAAF8100F46FE8 /* UIImageView+Cache.m */; };
 		6F45DC581AB821970056EC4D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F45DC571AB821970056EC4D /* main.m */; };
 		6F45DC5B1AB821970056EC4D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F45DC5A1AB821970056EC4D /* AppDelegate.m */; };
 		6F45DC5E1AB821970056EC4D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F45DC5D1AB821970056EC4D /* ViewController.m */; };
@@ -58,6 +59,7 @@
 		6F45DD211AB824C60056EC4D /* UIScrollView+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F45DD0D1AB824C60056EC4D /* UIScrollView+Category.m */; };
 		6F45DD281AB82A750056EC4D /* FileLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F45DD251AB82A750056EC4D /* FileLoad.m */; };
 		6F45DD291AB82A750056EC4D /* HttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F45DD271AB82A750056EC4D /* HttpRequest.m */; };
+		6F45DD2C1AB922E90056EC4D /* PUImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F45DD2B1AB922E90056EC4D /* PUImageManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +73,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6F41BBCE1ABAAF8100F46FE8 /* UIImageView+Cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Cache.h"; sourceTree = "<group>"; };
+		6F41BBCF1ABAAF8100F46FE8 /* UIImageView+Cache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Cache.m"; sourceTree = "<group>"; };
 		6F45DC521AB821970056EC4D /* TemplateProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TemplateProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F45DC561AB821970056EC4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F45DC571AB821970056EC4D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -174,6 +178,8 @@
 		6F45DD251AB82A750056EC4D /* FileLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileLoad.m; sourceTree = "<group>"; };
 		6F45DD261AB82A750056EC4D /* HttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpRequest.h; sourceTree = "<group>"; };
 		6F45DD271AB82A750056EC4D /* HttpRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpRequest.m; sourceTree = "<group>"; };
+		6F45DD2A1AB922E90056EC4D /* PUImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PUImageManager.h; sourceTree = "<group>"; };
+		6F45DD2B1AB922E90056EC4D /* PUImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PUImageManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -312,6 +318,8 @@
 				6F45DD0B1AB824C60056EC4D /* NSTimer+Block.m */,
 				6F45DD0C1AB824C60056EC4D /* UIScrollView+Category.h */,
 				6F45DD0D1AB824C60056EC4D /* UIScrollView+Category.m */,
+				6F41BBCE1ABAAF8100F46FE8 /* UIImageView+Cache.h */,
+				6F41BBCF1ABAAF8100F46FE8 /* UIImageView+Cache.m */,
 			);
 			path = category;
 			sourceTree = "<group>";
@@ -385,6 +393,8 @@
 				6F45DD231AB82A750056EC4D /* network */,
 				6F45DCA91AB821EC0056EC4D /* PUAudioManager.h */,
 				6F45DCAA1AB821EC0056EC4D /* PUAudioManager.m */,
+				6F45DD2A1AB922E90056EC4D /* PUImageManager.h */,
+				6F45DD2B1AB922E90056EC4D /* PUImageManager.m */,
 				6F45DCAB1AB821EC0056EC4D /* PUFileDownloadOperation.h */,
 				6F45DCAC1AB821EC0056EC4D /* PUFileDownloadOperation.m */,
 			);
@@ -579,6 +589,7 @@
 				6F45DCD31AB822DB0056EC4D /* TouchDetector.m in Sources */,
 				6F45DCBE1AB821EC0056EC4D /* UncaughtExceptionHandler.m in Sources */,
 				6F45DD101AB824C60056EC4D /* NSDate+Category.m in Sources */,
+				6F41BBD01ABAAF8100F46FE8 /* UIImageView+Cache.m in Sources */,
 				6F45DD151AB824C60056EC4D /* UIImage+Utility.m in Sources */,
 				6F45DCC01AB821EC0056EC4D /* AFHTTPRequestOperationManager.m in Sources */,
 				6F45DCD01AB822D10056EC4D /* MyTimer.m in Sources */,
@@ -593,6 +604,7 @@
 				6F45DCC61AB821EC0056EC4D /* AFURLResponseSerialization.m in Sources */,
 				6F45DD171AB824C60056EC4D /* UIColor+Utility.m in Sources */,
 				6F45DD181AB824C60056EC4D /* NSString+Utility.m in Sources */,
+				6F45DD2C1AB922E90056EC4D /* PUImageManager.m in Sources */,
 				6F45DCBD1AB821EC0056EC4D /* MyCommon.m in Sources */,
 				6F45DD291AB82A750056EC4D /* HttpRequest.m in Sources */,
 				6F45DC581AB821970056EC4D /* main.m in Sources */,
@@ -802,6 +814,7 @@
 				6F45DC771AB821970056EC4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6F45DC781AB821970056EC4D /* Build configuration list for PBXNativeTarget "TemplateProjectTests" */ = {
 			isa = XCConfigurationList;
@@ -810,6 +823,7 @@
 				6F45DC7A1AB821970056EC4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
