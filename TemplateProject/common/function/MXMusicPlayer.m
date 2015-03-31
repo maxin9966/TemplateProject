@@ -160,7 +160,7 @@
         }
     }else{
         //获取缓存数据
-        audioData = [[MyCommon audioManager] getAudioWithUrl:_url];
+        audioData = [[MyCommon audioManager] getFileWithUrl:_url];
         if(audioData){
             //播放缓存音频
             [self playMusic];
@@ -170,7 +170,7 @@
             if(delegate && [delegate respondsToSelector:@selector(musicPlayerDelegateBeginDownload)]){
                 [delegate musicPlayerDelegateBeginDownload];
             }
-            operation = [[MyCommon audioManager] downloadAudioWithUrl:_url progress:nil completed:^(NSData *data, NSError *error) {
+            operation = [[MyCommon audioManager] downloadFileWithUrl:_url progress:nil completed:^(NSData *data, NSError *error) {
                 audioData = data;
                 if(audioData){
                     //播放

@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "XLoader.h"
-#import "PUAudioManager.h"
+#import "PUFileManager.h"
 #import "UIView+HUD.h"
 #import "MyTimer.h"
 #import "PUImageManager.h"
 #import "UIImageView+Cache.h"
+#import "UIImage+ImageEffects.h"
+#import "UIImage+Utility.h"
 
 /**
  
@@ -51,8 +53,11 @@
 
 @interface MyCommon : NSObject
 
+//文件管理器
++ (PUFileManager*)fileManger;
+
 //音频管理器
-+ (PUAudioManager*)audioManager;
++ (PUFileManager*)audioManager;
 
 //图片管理器
 + (PUImageManager*)imageManager;

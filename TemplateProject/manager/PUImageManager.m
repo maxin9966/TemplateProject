@@ -48,10 +48,10 @@
     if(isExist){
         //已经存在
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSData *data = [cacheManager dataFromDiskForKey:urlString];
-            UIImage *image = nil;
-            if(data){
-                image = [UIImage imageWithData:data];
+            UIImage *image = [cacheManager imageForKey:urlString];
+            if(image){
+                //解析图片 避免卡顿
+                [image resizedImageWithSize:CGSizeMake(1, 1)];
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 //判断是否已经取消
@@ -71,10 +71,13 @@
                 if(!error && data){
                     //成功
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        UIImage *image = [UIImage imageWithData:data];
+                        //解析图片 避免卡顿
+                        [image resizedImageWithSize:CGSizeMake(1, 1)];
                         //持久化
-                        [cacheManager store:data forKey:urlString];
+                        [cacheManager storeImage:image forKey:urlString];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            completedBlock([UIImage imageWithData:data],nil);
+                            completedBlock(image,nil);
                         });
                     });
                 }else{

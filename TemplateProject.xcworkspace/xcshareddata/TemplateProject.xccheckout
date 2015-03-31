@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C496752F-1547-4836-B03D-6751A1759D54</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TemplateProject</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>704A47B2961953E45252042B0390609D51A87537</key>
+		<string>github.com:maxin9966/TemplateProject.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>TemplateProject.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>704A47B2961953E45252042B0390609D51A87537</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:maxin9966/TemplateProject.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>704A47B2961953E45252042B0390609D51A87537</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>704A47B2961953E45252042B0390609D51A87537</string>
+			<key>IDESourceControlWCCName</key>
+			<string>TemplateProject</string>
+		</dict>
+	</array>
+</dict>
+</plist>

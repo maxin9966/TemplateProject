@@ -10,13 +10,24 @@
 
 @implementation MyCommon
 
-//音频管理器
-+ (PUAudioManager*)audioManager
+//文件管理器
++ (PUFileManager*)fileManger
 {
-    static PUAudioManager *puAudioManager = nil;
+    static PUFileManager *puFileManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        puAudioManager = [[PUAudioManager alloc] initWithNamespace:@"MXAudioCache"];
+        puFileManager = [[PUFileManager alloc] initWithNamespace:@"MXFileCache"];
+    });
+    return puFileManager;
+}
+
+//音频管理器
++ (PUFileManager*)audioManager
+{
+    static PUFileManager *puAudioManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        puAudioManager = [[PUFileManager alloc] initWithNamespace:@"MXAudioCache"];
     });
     return puAudioManager;
 }

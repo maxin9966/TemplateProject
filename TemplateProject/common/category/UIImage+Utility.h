@@ -41,4 +41,7 @@
 //圆形图片
 - (UIImage *)createRoundedWithRadius:(CGFloat)radius;
 
+//调整图片大小
+- (UIImage *)resizedImageWithSize:(CGSize)size;
+
 @end

@@ -1,15 +1,15 @@
 //
-//  PUAudioManager.m
-//  Pickup
+//  PUFileManager.m
+//  bcj
 //
-//  Created by MA on 14-9-30.
-//  Copyright (c) 2014年 nsxiu. All rights reserved.
+//  Created by antsmen on 15-3-23.
+//  Copyright (c) 2015年 antsmen. All rights reserved.
 //
 
-#import "PUAudioManager.h"
+#import "PUFileManager.h"
 #import "PUCache.h"
 
-@interface PUAudioManager()
+@interface PUFileManager()
 {
     //缓存管理器
     PUCache *cacheManager;
@@ -17,7 +17,7 @@
 
 @end
 
-@implementation PUAudioManager
+@implementation PUFileManager
 
 - (instancetype)initWithNamespace:(NSString*)ns
 {
@@ -31,10 +31,10 @@
     return self;
 }
 
-//音频下载
-- (PUFileDownloadOperation*)downloadAudioWithUrl:(NSURL*)url
-                                        progress:(DownloaderProgressBlock)progressBlock
-                                       completed:(DownloaderCompletionBlock)completedBlock
+//下载
+- (PUFileDownloadOperation*)downloadFileWithUrl:(NSURL*)url
+                                       progress:(DownloaderProgressBlock)progressBlock
+                                      completed:(DownloaderCompletionBlock)completedBlock
 {
     if(!url){
         completedBlock(nil,[NSError new]);
@@ -84,7 +84,7 @@
 }
 
 //获取缓存
-- (NSData*)getAudioWithUrl:(NSURL*)url
+- (NSData*)getFileWithUrl:(NSURL*)url
 {
     NSString *urlString = [url absoluteString];
     return [cacheManager dataFromDiskForKey:urlString];
