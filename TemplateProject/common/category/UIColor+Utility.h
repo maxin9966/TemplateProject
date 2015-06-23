@@ -10,9 +10,6 @@
 
 @interface UIColor (Utility)
 
-//color序列化
-- (NSString*)colorSerializable;
-
 //反色
 - (UIColor*)inverseColor;
 

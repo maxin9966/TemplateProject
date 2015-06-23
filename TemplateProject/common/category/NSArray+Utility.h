@@ -23,4 +23,7 @@
 //删除所有相同的object
 - (BOOL)deleteObj:(id<NSObject>)object;
 
+//安全添加
+- (BOOL)addObjectSafely:(id)anObject;
+
 @end

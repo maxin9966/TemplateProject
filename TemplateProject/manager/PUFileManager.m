@@ -32,45 +32,39 @@
 }
 
 //下载
-- (PUFileDownloadOperation*)downloadFileWithUrl:(NSURL*)url
-                                       progress:(DownloaderProgressBlock)progressBlock
-                                      completed:(DownloaderCompletionBlock)completedBlock
+- (TCBlobDownload*)downloadFileWithUrl:(NSURL*)url
+                              progress:(DownloadProgressBlock)progressBlock
+                             completed:(DownloadCompletionBlock)completedBlock;
 {
     if(!url){
         completedBlock(nil,[NSError new]);
         return nil;
     }
     
-    PUFileDownloadOperation* op = [PUFileDownloadOperation new];
+    TCBlobDownload *op = nil;
     
     NSString *urlString = [url absoluteString];
     BOOL isExist = [cacheManager existsWithKey:urlString];
     if(isExist){
         //已经存在
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSData *data = [cacheManager dataFromDiskForKey:urlString];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //判断是否已经取消
-                if(!op.isCancelled){
-                    if(data){
-                        completedBlock(data,nil);
-                    }else{
-                        completedBlock(nil,[NSError new]);
-                    }
-                }
-            });
-        });
+        NSString *cachePath = [cacheManager cachePathForKey:urlString];
+        if(cachePath.length){
+            completedBlock(cachePath,nil);
+        }
     }else{
         //下载
-        op.httpOperation = [FileLoad downloadWithUrl:url progress:progressBlock completion:^(NSData *data, NSError *error) {
+        op = [DownloadManager downloadWithUrl:url progress:progressBlock completion:^(NSString *filePath, NSError *error) {
             if(!op.isCancelled){
-                if(!error && data){
+                if(!error && filePath){
                     //成功
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                         //持久化
-                        [cacheManager store:data forKey:urlString];
+                        [cacheManager moveFile:filePath forKey:urlString];
+                        NSString *cachePath = [cacheManager cachePathForKey:urlString];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            completedBlock(data,nil);
+                            if(!op.isCancelled){
+                                completedBlock(cachePath,nil);
+                            }
                         });
                     });
                 }else{

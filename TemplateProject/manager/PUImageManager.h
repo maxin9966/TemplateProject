@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PUFileDownloadOperation.h"
-#import "FileLoad.h"
+#import "DownloadManager.h"
 
 /**
  
@@ -23,9 +22,9 @@ typedef void(^ImageDownloaderCompletionBlock)(UIImage *image,NSError *error);
 - (instancetype)initWithNamespace:(NSString*)ns;
 
 //图片下载并缓存
-- (PUFileDownloadOperation*)downloadImageWithUrl:(NSURL*)url
-                                        progress:(DownloaderProgressBlock)progressBlock
-                                       completed:(ImageDownloaderCompletionBlock)completedBlock;
+- (TCBlobDownload*)downloadImageWithUrl:(NSURL*)url
+                               progress:(DownloadProgressBlock)progressBlock
+                              completed:(ImageDownloaderCompletionBlock)completedBlock;
 
 //是否有缓存
 - (BOOL)isExistWithUrl:(NSURL*)url;

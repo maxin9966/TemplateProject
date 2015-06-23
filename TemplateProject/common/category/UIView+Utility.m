@@ -7,44 +7,131 @@
 //
 
 #import "UIView+Utility.h"
+#import "objc/runtime.h"
+
+static char zoomRatio;
 
 @implementation UIView (Utility)
+
+- (CGFloat)zoomRatio
+{
+    NSNumber *number = objc_getAssociatedObject(self, &zoomRatio);
+    if(number){
+        return [number floatValue];
+    }else{
+        return 1;
+    }
+}
 
 //等比缩放
 - (void)zoomWithRatio:(CGFloat)ratio
 {
-    if(ratio==1 || ratio<0){
+    CGFloat currentRatio = [self zoomRatio];
+    if(ratio == currentRatio || ratio<0){
         return;
     }
-    self.frame = CGRectMake(self.frame.origin.x*ratio, self.frame.origin.y*ratio, self.frame.size.width*ratio, self.frame.size.height*ratio);
+    CGFloat deltaRatio = ratio/currentRatio;
+    self.frame = CGRectMake(self.frame.origin.x*deltaRatio, self.frame.origin.y*deltaRatio, self.frame.size.width*deltaRatio, self.frame.size.height*deltaRatio);
     if([self isKindOfClass:[UIScrollView class]]){
         UIScrollView *sv = (UIScrollView*)self;
-        sv.contentSize = CGSizeMake(sv.contentSize.width*ratio, sv.contentSize.height*ratio);
-        sv.contentOffset = CGPointMake(sv.contentOffset.x*ratio, sv.contentOffset.y*ratio);
+        sv.contentSize = CGSizeMake(sv.contentSize.width*deltaRatio, sv.contentSize.height*deltaRatio);
+        sv.contentOffset = CGPointMake(sv.contentOffset.x*deltaRatio, sv.contentOffset.y*deltaRatio);
     }
     if([self isKindOfClass:[UILabel class]]){
         UILabel *label = (UILabel*)self;
-        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize*ratio];
+        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize*deltaRatio];
     }
     if([self isKindOfClass:[UITextField class]]){
         UITextField *tf = (UITextField*)self;
-        tf.font = [UIFont fontWithName:tf.font.fontName size:tf.font.pointSize*ratio];
+        tf.font = [UIFont fontWithName:tf.font.fontName size:tf.font.pointSize*deltaRatio];
     }
     if([self isKindOfClass:[UITextView class]]){
         UITextView *tv = (UITextView*)self;
-        tv.font = [UIFont fontWithName:tv.font.fontName size:tv.font.pointSize*ratio];
+        tv.font = [UIFont fontWithName:tv.font.fontName size:tv.font.pointSize*deltaRatio];
     }
     if([self isKindOfClass:[UIButton class]]){
         UIButton *btn = (UIButton*)self;
-        btn.titleLabel.font = [UIFont fontWithName:btn.titleLabel.font.fontName size:btn.titleLabel.font.pointSize*ratio];
+        btn.titleLabel.font = [UIFont fontWithName:btn.titleLabel.font.fontName size:btn.titleLabel.font.pointSize*deltaRatio];
+    }
+    self.layer.borderWidth *= ratio;
+    self.layer.cornerRadius *= ratio;
+    objc_setAssociatedObject(self, &zoomRatio, @(ratio), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)zoomSubviewsWithRatio:(CGFloat)ratio except:(NSArray*)exceptList
+{
+    if(exceptList && ![exceptList isKindOfClass:[NSArray class]]){
+        exceptList = @[exceptList];
+    }
+    for(UIView *view in self.subviews){
+        if(exceptList.count){
+            if(![exceptList containsObject:view]){
+                [view zoomWithRatio:ratio];
+            }
+        }else{
+            [view zoomWithRatio:ratio];
+        }
     }
 }
 
 - (void)zoomSubviewsWithRatio:(CGFloat)ratio
 {
-    for(UIView *view in self.subviews){
-        [view zoomWithRatio:ratio];
-    }
+    [self zoomSubviewsWithRatio:ratio except:nil];
+}
+
+//坐标
+- (CGFloat)bottomY
+{
+    return self.frame.origin.y+self.frame.size.height;
+}
+
+- (CGFloat)topY
+{
+    return self.frame.origin.y;
+}
+
+- (CGFloat)leftX
+{
+    return self.frame.origin.x;
+}
+
+- (CGFloat)rightX
+{
+    return self.frame.origin.x+self.frame.size.width;
+}
+
+- (void)setFrameWidth:(CGFloat)newWidth {
+    CGRect f = self.frame;
+    f.size.width = newWidth;
+    self.frame = f;
+}
+
+- (void)setFrameHeight:(CGFloat)newHeight {
+    CGRect f = self.frame;
+    f.size.height = newHeight;
+    self.frame = f;
+}
+
+- (void)setFrameOriginX:(CGFloat)newX {
+    CGRect f = self.frame;
+    f.origin.x = newX;
+    self.frame = f;
+}
+
+- (void)setFrameOriginY:(CGFloat)newY {
+    CGRect f = self.frame;
+    f.origin.y = newY;
+    self.frame = f;
+}
+
+#pragma mark - draw
+
+- (UIView*)drawLineInRect:(CGRect)rect color:(UIColor *)color
+{
+    UIView *line = [[UIView alloc] initWithFrame:rect];
+    line.backgroundColor = color;
+    [self addSubview:line];
+    return line;
 }
 
 @end

@@ -32,16 +32,16 @@
 }
 
 //图片下载并缓存
-- (PUFileDownloadOperation*)downloadImageWithUrl:(NSURL*)url
-                                        progress:(DownloaderProgressBlock)progressBlock
-                                       completed:(ImageDownloaderCompletionBlock)completedBlock
+- (TCBlobDownload*)downloadImageWithUrl:(NSURL*)url
+                               progress:(DownloadProgressBlock)progressBlock
+                              completed:(ImageDownloaderCompletionBlock)completedBlock
 {
     if(!url){
         completedBlock(nil,[NSError new]);
         return nil;
     }
     
-    PUFileDownloadOperation* op = [PUFileDownloadOperation new];
+    TCBlobDownload* op = [TCBlobDownload new];
     
     NSString *urlString = [url absoluteString];
     BOOL isExist = [cacheManager existsWithKey:urlString];
@@ -49,10 +49,8 @@
         //已经存在
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             UIImage *image = [cacheManager imageForKey:urlString];
-            if(image){
-                //解析图片 避免卡顿
-                [image resizedImageWithSize:CGSizeMake(1, 1)];
-            }
+            //解析图片 避免卡顿
+            [image resizedImageWithSize:CGSizeMake(1, 1)];
             dispatch_async(dispatch_get_main_queue(), ^{
                 //判断是否已经取消
                 if(!op.isCancelled){
@@ -66,18 +64,20 @@
         });
     }else{
         //下载
-        op.httpOperation = [FileLoad downloadWithUrl:url progress:progressBlock completion:^(NSData *data, NSError *error) {
+        op = [DownloadManager downloadWithUrl:url progress:progressBlock completion:^(NSString *filePath, NSError *error) {
             if(!op.isCancelled){
-                if(!error && data){
+                if(!error && filePath){
                     //成功
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        UIImage *image = [UIImage imageWithData:data];
+                        //持久化
+                        [cacheManager moveImageFile:filePath forKey:urlString];
+                        UIImage *image = [cacheManager imageForKey:urlString];
                         //解析图片 避免卡顿
                         [image resizedImageWithSize:CGSizeMake(1, 1)];
-                        //持久化
-                        [cacheManager storeImage:image forKey:urlString];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            completedBlock(image,nil);
+                            if(!op.isCancelled){
+                                completedBlock(image,nil);
+                            }
                         });
                     });
                 }else{

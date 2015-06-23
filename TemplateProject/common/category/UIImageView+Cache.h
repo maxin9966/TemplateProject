@@ -19,7 +19,7 @@
 
 - (void)mx_setImageWithURL:(NSString*)urlString placeholderImage:(UIImage *)placeholder completed:(ImageDownloaderCompletionBlock)completedBlock;
 
-- (void)mx_setImageWithURL:(NSString*)urlString placeholderImage:(UIImage *)placeholder progress:(DownloaderProgressBlock)progressBlock completed:(ImageDownloaderCompletionBlock)completedBlock;
+- (void)mx_setImageWithURL:(NSString*)urlString placeholderImage:(UIImage *)placeholder progress:(DownloadProgressBlock)progressBlock completed:(ImageDownloaderCompletionBlock)completedBlock;
 
 - (void)mx_cancelCurrentImageLoad;
 

@@ -7,17 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PUFileDownloadOperation.h"
-#import "FileLoad.h"
+#import "DownloadManager.h"
 
 @interface PUFileManager : NSObject
 
 - (instancetype)initWithNamespace:(NSString*)ns;
 
 //文件下载并缓存
-- (PUFileDownloadOperation*)downloadFileWithUrl:(NSURL*)url
-                                       progress:(DownloaderProgressBlock)progressBlock
-                                      completed:(DownloaderCompletionBlock)completedBlock;
+- (TCBlobDownload*)downloadFileWithUrl:(NSURL*)url
+                              progress:(DownloadProgressBlock)progressBlock
+                             completed:(DownloadCompletionBlock)completedBlock;
 
 //是否有缓存
 - (BOOL)isExistWithUrl:(NSURL*)url;

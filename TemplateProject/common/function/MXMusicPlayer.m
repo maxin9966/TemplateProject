@@ -1,4 +1,5 @@
-//
+
+ //
 //  MusicPlayer.m
 //  MagicMusicPlayer
 //
@@ -14,7 +15,7 @@
 {
     AVAudioPlayer *player;    
     NSTimer *timer;
-    PUFileDownloadOperation *operation;
+    TCBlobDownload *operation;
     NSData *audioData;
 }
 
@@ -88,7 +89,7 @@
         player.delegate = self;
     }
     AVAudioSession *session = [AVAudioSession sharedInstance];
-    BOOL success = [session setCategory:AVAudioSessionCategoryPlayback error:nil];
+    BOOL success = [session setCategory:AVAudioSessionCategorySoloAmbient error:nil];
     if(success){
         [session setActive:YES error:nil];
     }
@@ -170,14 +171,16 @@
             if(delegate && [delegate respondsToSelector:@selector(musicPlayerDelegateBeginDownload)]){
                 [delegate musicPlayerDelegateBeginDownload];
             }
-            operation = [[MyCommon audioManager] downloadFileWithUrl:_url progress:nil completed:^(NSData *data, NSError *error) {
-                audioData = data;
-                if(audioData){
-                    //播放
-                    [self playMusic];
-                }else{
-                    //失败
-                    [self errorCallBack];
+            operation = [[MyCommon audioManager] downloadFileWithUrl:_url progress:nil completed:^(NSString *filePath, NSError *error) {
+                if(!operation.isCancelled){
+                    audioData = [NSData dataWithContentsOfFile:filePath];
+                    if(audioData){
+                        //播放
+                        [self playMusic];
+                    }else{
+                        //失败
+                        [self errorCallBack];
+                    }
                 }
             }];
         }

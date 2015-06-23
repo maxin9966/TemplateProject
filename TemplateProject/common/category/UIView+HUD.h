@@ -13,6 +13,7 @@
 
 //普通提示
 - (void)showTips:(NSString*)text;
+- (void)showTips:(NSString*)text touchEnabled:(BOOL)touchEnabled;
 - (void)showTips:(NSString*)text duration:(NSTimeInterval)interval touchEnabled:(BOOL)touchEnabled completionBlock:(MBProgressHUDCompletionBlock)completion;
 - (void)hideTips; //立刻关闭
 

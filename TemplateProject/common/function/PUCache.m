@@ -54,7 +54,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         _diskCachePath = [paths[0] stringByAppendingPathComponent:fullNamespace];
         
-        _fileManager = [NSFileManager defaultManager];
+        _fileManager = [[NSFileManager alloc] init];
         
         [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
 
@@ -133,7 +133,31 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     }
 }
 
+- (void)moveImageFile:(NSString *)imagePath forKey:(NSString *)key
+{
+    [self moveFile:imagePath forKey:key];
+    UIImage *image = [self imageForKey:key];
+    //内存缓存
+    if(image){
+        [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+    }
+}
+
 #pragma mark - Store Data
+- (void)moveFile:(NSString *)filePath forKey:(NSString *)key
+{
+    if(!filePath || !key){
+        return;
+    }
+    if(![_fileManager fileExistsAtPath:filePath]){
+        return;
+    }
+    if (![_fileManager fileExistsAtPath:_diskCachePath]) {
+        [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
+    }
+    [_fileManager moveItemAtPath:filePath toPath:[self cachePathForKey:key] error:nil];
+}
+
 - (void)store:(NSData *)data forKey:(NSString *)key
 {
     if(!data || !key){
@@ -163,7 +187,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
         return NO;
     }
     
-    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self cachePathForKey:key]];
+    BOOL exists = [_fileManager fileExistsAtPath:[self cachePathForKey:key]];
     
     return exists;
 }
@@ -374,7 +398,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     NSDirectoryEnumerator *fileEnumerator = [_fileManager enumeratorAtPath:self.diskCachePath];
     for (NSString *fileName in fileEnumerator) {
         NSString *filePath = [self.diskCachePath stringByAppendingPathComponent:fileName];
-        NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+        NSDictionary *attrs = [_fileManager attributesOfItemAtPath:filePath error:nil];
         size += [attrs fileSize];
     }
     return size;
@@ -471,8 +495,8 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     }
     NSString *originPath = [self cachePathForKey:key];
     NSString *newPath = [self cachePathForKey:newKey];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:originPath]) {
-        [[NSFileManager defaultManager] moveItemAtPath:originPath toPath:newPath error:nil];
+    if ([_fileManager fileExistsAtPath:originPath]) {
+        [_fileManager moveItemAtPath:originPath toPath:newPath error:nil];
     }
 }
 

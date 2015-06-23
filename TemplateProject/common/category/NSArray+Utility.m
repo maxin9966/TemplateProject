@@ -60,4 +60,14 @@
     return isDelete;
 }
 
+//安全添加
+- (BOOL)addObjectSafely:(id)anObject
+{
+    if(!anObject){
+        return NO;
+    }
+    [self addObject:anObject];
+    return YES;
+}
+
 @end

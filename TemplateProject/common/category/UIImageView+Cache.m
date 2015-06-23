@@ -34,9 +34,11 @@ static char imageOperationKey;
     [self mx_setImageWithURL:urlString placeholderImage:placeholder progress:nil completed:completedBlock];
 }
 
-- (void)mx_setImageWithURL:(NSString*)urlString placeholderImage:(UIImage *)placeholder progress:(DownloaderProgressBlock)progressBlock completed:(ImageDownloaderCompletionBlock)completedBlock
+- (void)mx_setImageWithURL:(NSString*)urlString placeholderImage:(UIImage *)placeholder progress:(DownloadProgressBlock)progressBlock completed:(ImageDownloaderCompletionBlock)completedBlock
 {
     [self mx_cancelCurrentImageLoad];
+    
+    self.image = placeholder;
     
     if(!urlString.length){
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -54,10 +56,8 @@ static char imageOperationKey;
     
     objc_setAssociatedObject(self, &imageUrlKey, urlString, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
-    self.image = placeholder;
-    
     __weak UIImageView *wself = self;
-    PUFileDownloadOperation *operation = [[MyCommon imageManager] downloadImageWithUrl:[NSURL URLWithString:urlString] progress:^(CGFloat progress) {
+    TCBlobDownload *operation = [[MyCommon imageManager] downloadImageWithUrl:[NSURL URLWithString:urlString] progress:^(CGFloat progress) {
         if(progressBlock){
             progressBlock(progress);
         }
@@ -79,7 +79,7 @@ static char imageOperationKey;
 
 - (void)mx_cancelCurrentImageLoad
 {
-    PUFileDownloadOperation *op = objc_getAssociatedObject(self, &imageOperationKey);
+    TCBlobDownload *op = objc_getAssociatedObject(self, &imageOperationKey);
     if(op){
         [op cancel];
     }

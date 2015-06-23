@@ -93,7 +93,7 @@
 + (UIViewAnimationOptions)animationOptionsForCurve:(UIViewAnimationCurve)curve;
 
 //显示提示框
-+(UIAlertView*)showTips:(NSString*)string;
++ (UIAlertView*)showTips:(NSString*)string;
 
 //显示提示框 一定时间内不再提示 interval传0则表示永不重复
 + (UIAlertView*)showTips:(NSString *)string key:(NSString*)key noRepeatInterval:(NSTimeInterval)interval;

@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-/*
-    数据缓存管理
+/**
+ 
+ 数据缓存管理
+ 
  */
 
 //定义block
@@ -43,6 +45,10 @@ typedef void(^PUCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalSize);
 - (BOOL)diskExistsWithKey:(NSString *)key;
 
 //store
+- (void)moveFile:(NSString *)filePath forKey:(NSString *)key;
+
+- (void)moveImageFile:(NSString *)imagePath forKey:(NSString *)key;
+
 - (void)store:(NSData *)data forKey:(NSString *)key;
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key;

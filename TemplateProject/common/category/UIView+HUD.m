@@ -51,6 +51,11 @@ static const void *hudDoneTipsKey = &hudDoneTipsKey;
     [self showTips:text duration:1.f touchEnabled:NO completionBlock:nil];
 }
 
+- (void)showTips:(NSString*)text touchEnabled:(BOOL)touchEnabled
+{
+    [self showTips:text duration:1.f touchEnabled:touchEnabled completionBlock:nil];
+}
+
 - (void)showTips:(NSString*)text duration:(NSTimeInterval)interval touchEnabled:(BOOL)touchEnabled completionBlock:(MBProgressHUDCompletionBlock)completion
 {
     MBProgressHUD *tipView = [self tipsView];
