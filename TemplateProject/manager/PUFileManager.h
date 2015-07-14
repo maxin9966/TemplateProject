@@ -14,7 +14,7 @@
 - (instancetype)initWithNamespace:(NSString*)ns;
 
 //文件下载并缓存
-- (TCBlobDownload*)downloadFileWithUrl:(NSURL*)url
+- (TCBlobDownloader*)downloadFileWithUrl:(NSURL*)url
                               progress:(DownloadProgressBlock)progressBlock
                              completed:(DownloadCompletionBlock)completedBlock;
 

@@ -32,7 +32,7 @@
 }
 
 //图片下载并缓存
-- (TCBlobDownload*)downloadImageWithUrl:(NSURL*)url
+- (TCBlobDownloader*)downloadImageWithUrl:(NSURL*)url
                                progress:(DownloadProgressBlock)progressBlock
                               completed:(ImageDownloaderCompletionBlock)completedBlock
 {
@@ -41,10 +41,11 @@
         return nil;
     }
     
-    TCBlobDownload* op = [TCBlobDownload new];
+    TCBlobDownloader* op = [TCBlobDownloader new];
     
     NSString *urlString = [url absoluteString];
     BOOL isExist = [cacheManager existsWithKey:urlString];
+    //isExist = NO;
     if(isExist){
         //已经存在
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

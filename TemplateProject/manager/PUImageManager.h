@@ -22,7 +22,7 @@ typedef void(^ImageDownloaderCompletionBlock)(UIImage *image,NSError *error);
 - (instancetype)initWithNamespace:(NSString*)ns;
 
 //图片下载并缓存
-- (TCBlobDownload*)downloadImageWithUrl:(NSURL*)url
+- (TCBlobDownloader*)downloadImageWithUrl:(NSURL*)url
                                progress:(DownloadProgressBlock)progressBlock
                               completed:(ImageDownloaderCompletionBlock)completedBlock;
 

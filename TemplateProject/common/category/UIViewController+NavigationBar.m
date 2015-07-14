@@ -38,19 +38,19 @@ static const CGFloat navigationButtonWidth = 50.f;
         [navigationBar addSubview:bgImageView];
         
         UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [leftBtn setTitleColor:RGBA(255, 255, 255, 1) forState:UIControlStateNormal];
+        [leftBtn setTitleColor:navigationBarTitleColor forState:UIControlStateNormal];
         [leftBtn.titleLabel setFont:navigationBarButtonTitleFont];
         [navigationBar addSubview:leftBtn];
         
         UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [rightBtn setTitleColor:RGBA(255, 255, 255, 1) forState:UIControlStateNormal];
+        [rightBtn setTitleColor:navigationBarTitleColor forState:UIControlStateNormal];
         [rightBtn.titleLabel setFont:navigationBarButtonTitleFont];
         [navigationBar addSubview:rightBtn];
         
         UILabel *titleLabel = [[UILabel alloc] init];
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.font = navigationBarTitleFont;
-        titleLabel.textColor = RGBA(255, 255, 255, 1);
+        titleLabel.textColor = navigationBarTitleColor;
         [navigationBar addSubview:titleLabel];
         
         objc_setAssociatedObject(self, navigationBarLeftButtonKey, leftBtn, OBJC_ASSOCIATION_RETAIN_NONATOMIC);

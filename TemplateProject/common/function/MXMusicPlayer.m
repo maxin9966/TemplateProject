@@ -15,7 +15,7 @@
 {
     AVAudioPlayer *player;    
     NSTimer *timer;
-    TCBlobDownload *operation;
+    TCBlobDownloader *operation;
     NSData *audioData;
 }
 

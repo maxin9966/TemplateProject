@@ -13,7 +13,7 @@ static TCBlobDownloadManager *downloadManager = nil;
 @implementation DownloadManager
 
 //下载文件
-+ (TCBlobDownload *)downloadWithUrl:(NSURL*)url
++ (TCBlobDownloader *)downloadWithUrl:(NSURL*)url
                            progress:(DownloadProgressBlock)progress
                          completion:(DownloadCompletionBlock)block
 {
@@ -21,7 +21,7 @@ static TCBlobDownloadManager *downloadManager = nil;
         downloadManager = [[TCBlobDownloadManager alloc] init];
         [downloadManager setMaxConcurrentDownloads:4];
     }
-    TCBlobDownload *op = [downloadManager startDownloadWithURL:url customPath:nil firstResponse:nil progress:^(float receivedLength, float totalLength) {
+    TCBlobDownloader *op = [downloadManager startDownloadWithURL:url customPath:nil firstResponse:nil progress:^(uint64_t receivedLength, uint64_t totalLength, NSInteger remainingTime, float aProgress) {
         if(progress){
             progress(receivedLength/totalLength);
         }

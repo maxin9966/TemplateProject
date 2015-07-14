@@ -8,9 +8,12 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
+#import "MainViewController.h"
 #import "UserLocation.h"
 #import "UncaughtExceptionHandler.h"
 #import "TouchDetector.h"
+#import <FIR/FIR.h>
+#import "WelcomeView.h"
 
 @interface AppDelegate ()
 
@@ -18,6 +21,7 @@
 
 @implementation AppDelegate
 @synthesize viewController;
+@synthesize navigationVC;
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -27,19 +31,55 @@
     [self firstOpen];
     
     //初始化界面
+    viewController = [[MainViewController alloc] init];
+    navigationVC = [[MXNavigationController alloc] initWithRootViewController:viewController];
+    navigationVC.navigationBarHidden = YES;
+    [navigationVC.navigationBar setBgColor:navigationBarBgColor];
+    navigationVC.navigationBar.tintColor = navigationBarTitleColor;
+    [navigationVC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : navigationBarTitleColor}];
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    viewController = [[ViewController alloc] init];
-    UINavigationController *nv = [[UINavigationController alloc] initWithRootViewController:viewController];
-    self.window.rootViewController = nv;
+    self.window.rootViewController = navigationVC;
     [self.window makeKeyAndVisible];
     
+    //status bar
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
     //crash日志
-    InstallUncaughtExceptionHandler();
+    //InstallUncaughtExceptionHandler();
+    
+    //bug日志
+    [FIR handleCrashWithKey:@"YOUR FIR KEY"];
     
     //检测触摸事件
     [TouchDetector install];
     
+    //初始化
+    [self initialization];
+    
     return YES;
+}
+
+//初始化
+- (void)initialization
+{
+    if(![MyCommon getDataFromUserDefaultWithKey:kUDFirstOpenTime]){
+        NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
+        [MyCommon saveDataToUserDefault:@(time) WithKey:kUDFirstOpenTime];
+    }
+    //欢迎页
+//    if(![MyCommon getDataFromUserDefaultWithKey:kUDBoolWelcome]){
+//        [WelcomeView showWithFileName:@"welcome"];
+//        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:YES];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(welcomeViewDidDismiss) name:kWelcomeDidDismissEvent object:nil];
+//    }
+}
+
+- (void)welcomeViewDidDismiss
+{
+    [MyCommon saveDataToUserDefault:@(YES) WithKey:kUDBoolWelcome];
+    //[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:YES];
 }
 
 //首次打开

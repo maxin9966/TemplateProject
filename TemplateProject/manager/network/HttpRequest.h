@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
 
-#define ServerBaseURL @""
-
 /**
  
  HTTP请求

@@ -7,16 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TCBlobDownloadManager.h"
+#import "TCBlobDownload.h"
 
-//downloader block
+/**
+ 
+ 文件下载
+ 
+ */
+
 typedef void(^DownloadProgressBlock)(CGFloat progress);
 typedef void(^DownloadCompletionBlock)(NSString *filePath,NSError *error);
 
 @interface DownloadManager : NSObject
 
 //下载文件
-+ (TCBlobDownload *)downloadWithUrl:(NSURL*)url
++ (TCBlobDownloader *)downloadWithUrl:(NSURL*)url
                            progress:(DownloadProgressBlock)progress
                          completion:(DownloadCompletionBlock)block;
 

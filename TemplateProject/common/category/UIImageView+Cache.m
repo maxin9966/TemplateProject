@@ -57,7 +57,7 @@ static char imageOperationKey;
     objc_setAssociatedObject(self, &imageUrlKey, urlString, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     __weak UIImageView *wself = self;
-    TCBlobDownload *operation = [[MyCommon imageManager] downloadImageWithUrl:[NSURL URLWithString:urlString] progress:^(CGFloat progress) {
+    TCBlobDownloader *operation = [[MyCommon imageManager] downloadImageWithUrl:[NSURL URLWithString:urlString] progress:^(CGFloat progress) {
         if(progressBlock){
             progressBlock(progress);
         }
@@ -79,8 +79,8 @@ static char imageOperationKey;
 
 - (void)mx_cancelCurrentImageLoad
 {
-    TCBlobDownload *op = objc_getAssociatedObject(self, &imageOperationKey);
-    if(op){
+    TCBlobDownloader *op = objc_getAssociatedObject(self, &imageOperationKey);
+    if(op && !op.isCancelled){
         [op cancel];
     }
     objc_removeAssociatedObjects(self);

@@ -17,17 +17,85 @@
 
 #import "MyCommon.h"
 #import "HttpRequest.h"
-#import "FileLoad.h"
-//#import "ReactiveCocoa.h"
+#import "ReactiveCocoa.h"
+#import "AFFileLoad.h"
+
+#import "BaseViewController.h"
 
 #endif
+
+//#define ServerBaseURL @"http://192.168.1.240:8080/meiyue/"             //测试
+#define ServerBaseURL @"http://120.26.105.157/yourProject/"         //正式
+
+/**
+ 
+ 提示
+ 
+ */
+#define LT_ResponseErrorTips @"网络异常"
+
+/**
+ 
+ 参数
+ 
+ */
+
+//color
+#define LT_Color_OceanBlue RGBA(21, 125, 251, 1)
+#define LT_Color_LightGray RGBA(155, 155, 155, 1)
+
+#define LT_Color_Main RGBA(246, 179, 46, 1)
+#define LT_Color_Main_Alpha(alpha) RGBA(246, 179, 46, alpha)
+#define LT_Color_BG_1 RGBA(254, 253, 224, 1)
+#define LT_Color_BG_2 RGBA(253, 243, 207, 1)
+
+#define LT_Color_TextTitle RGBA(35, 24, 21, 1)
+#define LT_Color_TextContent RGBA(89, 87, 87, 1)
+
+#define navigationBarBgColor RGBA(255, 255, 255, 1)
+#define navigationBarTitleColor LT_Color_LightGray
+
+//字体
+#define LT_Medium_FontName @"STHeitiJ-Medium"
+#define LT_Light_FontName @"STHeitiJ-Light"
+
+#define navigationBarTitleFont [UIFont boldSystemFontOfSize:16]
+#define navigationBarButtonTitleFont [UIFont boldSystemFontOfSize:16]
+
+//照片最大尺寸
+#define Avatar_MAX_SIDE_LENGTH 400.0
+//图片压缩率
+#define PhotoCompressionRatio 0.6
+//最大分辨率
+#define Photo_MAX_SIZE (1200.0*1200.0)
+
+//时间系数
+#define TimeFactor 0.001
+
+/**
+ 
+ notification
+ 
+ */
+#define kResponseData @"data"
+
+#define NotiDidLogin                    @"NotiDidLogin"
+#define NotiDidLogout                   @"NotiDidLogout"
+#define NotiDidRegister                 @"NotiDidRegister"
+
+#define NotiRequestNeedLogin            @"NotiRequestNeedLogin"     //需要登录
 
 /**
  
  key
  
  */
-#define kUDFirstOpenTime @"FirstOpenTime"           //首次打开的时间（时间戳）
+#define kUDFirstOpenTime                @"FirstOpenTime"            //首次打开的时间（时间戳）
+#define kUDBoolWelcome                  @"BoolWelcome"              //welcome
+#define kUDLoginData                    @"LoginData"                //登录信息
+#define kUDHistoryLoginAccount          @"HistoryLoginAccount"      //历史登录账号
+#define kUDHistoryLoginPassword         @"HistoryLoginPassword"     //历史登录密码
+#define kUDLoginCookie                  @"LoginCookie"              //登录cookie
 
 /**
  

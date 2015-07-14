@@ -15,6 +15,22 @@
 #import "UIImageView+Cache.h"
 #import "UIImage+ImageEffects.h"
 #import "UIImage+Utility.h"
+#import "UINavigationBar+Utility.h"
+#import "NSDictionary+Utility.h"
+#import "NSCoder+Utility.h"
+#import "Reachability.h"
+#import "UIViewController+NavigationBar.h"
+#import "UIView+Utility.h"
+#import "NSArray+Utility.h"
+#import "UIScrollView+Category.h"
+#import "NSDate+Category.h"
+#import "MXNavigationController.h"
+#import "NSString+Utility.h"
+#import "BlockAlertView.h"
+#import "NSObject+Utility.h"
+#import "NoCoverView.h"
+#import "SVPullToRefresh.h"
+#import "AppDelegate.h"
 
 /**
  
@@ -53,6 +69,16 @@
 
 @interface MyCommon : NSObject
 
+/**
+ 
+ barButton
+ 
+ */
++ (NSArray *)backBarButtonItemWithTarget:(id)target withSelector:(SEL)selector;
++ (NSArray *)doneBarButtonItemWithTarget:(id)target withSelector:(SEL)selector;
++ (NSArray *)customBarButtonItemWithTarget:(id)target withSelector:(SEL)selector withBtnImage:(NSString *)image withBtnHighlightImage:(NSString *)highlightImage;
++ (UIBarButtonItem *)barButtonItemWithTitle:(NSString*)title target:(id)target withSelector:(SEL)selector;
+
 //文件管理器
 + (PUFileManager*)fileManger;
 
@@ -61,6 +87,9 @@
 
 //图片管理器
 + (PUImageManager*)imageManager;
+
+//剩余内存
++ (int)availableMemory;
 
 //save userDefault
 + (BOOL)saveDataToUserDefault:(id)data WithKey:(NSString *)key;
@@ -100,5 +129,58 @@
 
 //执行某些代码 一定时间内不重复 interval传0则表示永不重复
 + (void)executing:(dispatch_block_t)block key:(NSString*)key noRepeatInterval:(NSTimeInterval)interval;
+
+//视频转MP4 (截取10秒)
++ (void)encodeVideoByUrl:(NSURL*)_videoURL ToUrl:(NSURL*)_mp4URL Quality:(NSString *const)quality Completion:(void (^)(BOOL isSuccess))completion;
+
+//PCM转MP3
++ (void)audio_PCMtoMP3_WavPath:(NSString*)pcmFilePath MP3Path:(NSString*)mp3FilePath;
+
+//获取错误信息
++ (NSError*)getErrorWithResponse:(NSDictionary*)dict;
+//获取请求失败的error
++ (NSError*)getFailureError:(NSError*)originError;
+
+//检测网络通畅
++ (BOOL)isEnableNetwork;
+
+//检测网络类型
++ (NetworkStatus)getNetworkType;
+
+//放大动画
++(void)zoomAnimation:(UIView*)view completion:(void (^)(BOOL finished))completion;
+
+//头像图片压缩
++ (UIImage*)avatarCompression:(UIImage*)avatarImg;
+
+//校爆图片降低分辨率
++ (UIImage*)reduceResolution:(UIImage*)image;
+
+//用户相片图片压缩
++ (UIImage*)photoCompress:(UIImage*)image;
+
+//随机获取的图片地址
++ (NSURL*)getRandomImageURL;
+
+//label size to fit
++ (void)sizeToFitWithLabel:(UILabel*)label;
+
++ (void)widthToFitWithLabel:(UILabel*)label;
+
++ (void)widthToFitWithLabel:(UILabel*)label widthLimmit:(CGFloat)limmit;
+
+//字节
++ (NSString *)readableValueWithBytes:(id)bytes;
+
+//解析URL参数
++ (NSDictionary*)parseURLParams:(NSString *)query;
+
+//根据时间戳获取date
++ (NSDate*)dateWithTimeIntervalSince1970:(NSTimeInterval)interval;
+
+//根据date获取时间戳
++ (NSTimeInterval)timeIntervalWithDate:(NSDate*)date;
+
++ (AppDelegate*)appDelegate;
 
 @end

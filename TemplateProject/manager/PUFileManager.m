@@ -32,7 +32,7 @@
 }
 
 //下载
-- (TCBlobDownload*)downloadFileWithUrl:(NSURL*)url
+- (TCBlobDownloader*)downloadFileWithUrl:(NSURL*)url
                               progress:(DownloadProgressBlock)progressBlock
                              completed:(DownloadCompletionBlock)completedBlock;
 {
@@ -41,7 +41,7 @@
         return nil;
     }
     
-    TCBlobDownload *op = nil;
+    TCBlobDownloader *op = nil;
     
     NSString *urlString = [url absoluteString];
     BOOL isExist = [cacheManager existsWithKey:urlString];
