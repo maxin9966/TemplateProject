@@ -54,7 +54,9 @@
     TCBlobDownloader *downloader = [[TCBlobDownloader alloc] initWithURL:url
                                                             downloadPath:downloadPath
                                                                 delegate:delegateOrNil];
-    [self.operationQueue addOperation:downloader];
+    if(!downloader.isFinished){
+        [self.operationQueue addOperation:downloader];
+    }
 
     return downloader;
 }
@@ -74,14 +76,18 @@
                                                                 progress:progressBlock
                                                                    error:errorBlock
                                                                 complete:completeBlock];
-    [self.operationQueue addOperation:downloader];
+    if(!downloader.isFinished){
+        [self.operationQueue addOperation:downloader];
+    }
 
     return downloader;
 }
 
 - (void)startDownload:(TCBlobDownloader *)download
 {
-    [self.operationQueue addOperation:download];
+    if(!download.isFinished){
+        [self.operationQueue addOperation:download];
+    }
 }
 
 - (void)cancelAllDownloadsAndRemoveFiles:(BOOL)remove

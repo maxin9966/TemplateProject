@@ -15,6 +15,7 @@ NSString * const TCBlobDownloadErrorHTTPStatusKey = @"TCBlobDownloadErrorHTTPSta
 #import "TCBlobDownloader.h"
 
 @interface TCBlobDownloader ()
+
 // Public
 @property (nonatomic, strong, readwrite) NSMutableURLRequest *fileRequest;
 @property (nonatomic, copy, readwrite) NSURL *downloadURL;
@@ -283,7 +284,6 @@ NSString * const TCBlobDownloadErrorHTTPStatusKey = @"TCBlobDownloadErrorHTTPSta
 
 #pragma mark - Public Methods
 
-
 - (void)cancelDownloadAndRemoveFile:(BOOL)remove
 {
     // Cancel the connection before deleting the file
@@ -310,18 +310,22 @@ NSString * const TCBlobDownloadErrorHTTPStatusKey = @"TCBlobDownloadErrorHTTPSta
 
 
 - (void)finishOperationWithState:(TCBlobDownloadState)state
-{    
+{
     // Cancel the connection in case cancel was called directly
     [self.connection cancel];
     [self.speedTimer invalidate];
     [self.file closeFile];
-    
+            
     // Let's finish the operation once and for all
-    [self willChangeValueForKey:@"isFinished"];
-    [self willChangeValueForKey:@"isExecuting"];
+    if(!self.isFinished){
+        [self willChangeValueForKey:@"isFinished"];
+        [self willChangeValueForKey:@"isExecuting"];
+    }
     self.state = state;
-    [self didChangeValueForKey:@"isExecuting"];
-    [self didChangeValueForKey:@"isFinished"];
+    if(!self.isFinished){
+        [self didChangeValueForKey:@"isExecuting"];
+        [self didChangeValueForKey:@"isFinished"];
+    }
 }
 
 - (void)cancel
