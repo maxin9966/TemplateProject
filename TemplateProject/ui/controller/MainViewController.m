@@ -8,6 +8,7 @@
 
 #import "MainViewController.h"
 #import "ImageTableViewCell.h"
+#import "TestViewController.h"
 
 @interface MainViewController ()
 <UITableViewDataSource,UITableViewDelegate>
@@ -33,6 +34,33 @@
     dataList = [NSMutableArray array];
     
     [self refresh];
+    
+    self.view.backgroundColor = [UIColor redColor];
+    
+//    [RACObserve(self.view, frame) subscribeNext:^(id object) {
+//        NSLog(@"frame changed");
+//    }];
+//    
+//    self.view.frame = CGRectMake(0, 0, 100, 100);
+    
+    UIButton *bgBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    bgBtn.backgroundColor = [UIColor redColor];
+    [self.view addSubview:bgBtn];
+    bgBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    [bgBtn addTarget:self action:@selector(pushToTest) forControlEvents:UIControlEventTouchUpInside];
+    
+    [MXDefaultNotificationCenter addObserver:self selector:@selector(receivedMXNotification:) name:TestNotification object:nil];
+}
+
+- (void)receivedMXNotification:(MXNotification*)notification
+{
+    NSLog(@"%@ received a MXNotificaion:%@\nThread:%d",NSStringFromClass([self class]),notification.object,[NSThread currentThread].isMainThread);
+}
+
+- (void)pushToTest
+{
+    TestViewController *testVC = [TestViewController new];
+    [self.navigationController pushViewController:testVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

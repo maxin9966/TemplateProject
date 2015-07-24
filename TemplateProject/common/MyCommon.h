@@ -31,6 +31,7 @@
 #import "NoCoverView.h"
 #import "SVPullToRefresh.h"
 #import "AppDelegate.h"
+#import "MXNotificationCenter.h"
 
 /**
  
