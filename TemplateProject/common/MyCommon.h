@@ -47,11 +47,11 @@
  */
 
 //屏蔽NSLog
-//#ifndef __OPTIMIZE__
-//#define NSLog(...) NSLog(__VA_ARGS__)
-//#else
-//#define NSLog(...) {}
-//#endif
+#ifndef __OPTIMIZE__
+#define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#define NSLog(...) {}
+#endif
 
 //获取系统版本号
 #define SystemVersion [[[UIDevice currentDevice] systemVersion] floatValue]
@@ -59,6 +59,9 @@
 #define SCREEN_WIDTH  [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 #define SCREEN_SCALE  [UIScreen mainScreen].scale
+//屏幕比例
+#define SCREEN_5_INCH_RATIO (SCREEN_WIDTH /320.f)
+#define SCREEN_6_INCH_RATIO (SCREEN_WIDTH /375.f)
 //RGBA
 #define RGBA(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:a]
 //角度
@@ -181,6 +184,9 @@
 
 //根据date获取时间戳
 + (NSTimeInterval)timeIntervalWithDate:(NSDate*)date;
+
+//屏幕截图
+- (UIImage*)getScreenImageAfterScreenUpdates:(BOOL)afterScreenUpdates;
 
 + (AppDelegate*)appDelegate;
 

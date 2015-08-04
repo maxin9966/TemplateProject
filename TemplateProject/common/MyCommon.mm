@@ -676,4 +676,17 @@
     return [UIApplication sharedApplication].delegate;
 }
 
+//屏幕截图
+- (UIImage*)getScreenImageAfterScreenUpdates:(BOOL)afterScreenUpdates
+{
+    UIView * view = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:afterScreenUpdates];
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
+    
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 @end

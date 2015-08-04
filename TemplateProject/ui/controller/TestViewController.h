@@ -10,6 +10,6 @@
 
 #define TestNotification @"MXNotificationTest"
 
-@interface TestViewController : UIViewController
+@interface TestViewController : BaseViewController
 
 @end

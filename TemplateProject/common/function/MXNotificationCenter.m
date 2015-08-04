@@ -7,6 +7,7 @@
 //
 
 #import "MXNotificationCenter.h"
+#import <objc/message.h>
 
 /**
  
@@ -105,6 +106,10 @@
     if(!observer || !aSelector || !aName.length){
         return;
     }
+    if([observer respondsToSelector:aSelector] == NO){
+        //NSLog(@"%s: %@ 没有 %@ 方法", __func__, NSStringFromClass([observer class]), NSStringFromSelector(aSelector));
+        return;
+    }
     if(!list){
         list = [NSMutableArray array];
     }
@@ -141,6 +146,7 @@
     for(NotificationObserver *observerObject in list){
         if(observerObject.observer && [notification.name isEqualToString:observerObject.notificationName]){
             [observerObject.observer performSelector:observerObject.selector withObject:notification];
+            //objc_msgSend(observerObject.observer, observerObject.selector, notification);
         }
     }
     [lock unlock];
