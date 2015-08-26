@@ -15,7 +15,6 @@
 
 - (AFHTTPRequestOperation*)getStarsWithCompletion:(ArrayBlock)completion;
 
-
 @end
 
 @interface Star : NSObject

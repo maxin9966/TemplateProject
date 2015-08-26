@@ -117,6 +117,11 @@ static const void *hudDoneTipsKey = &hudDoneTipsKey;
 #pragma mark - 正在加载
 - (void)showLoadingTips:(NSString*)text
 {
+    [self showLoadingTips:text touchEnabled:NO];
+}
+
+- (void)showLoadingTips:(NSString*)text touchEnabled:(BOOL)touchEnabled
+{
     MBProgressHUD *loadingView = [self loadingView];
     if(!loadingView){
         loadingView = [[MBProgressHUD alloc] initWithView:self];
@@ -125,6 +130,7 @@ static const void *hudDoneTipsKey = &hudDoneTipsKey;
         [self setLoadingView:loadingView];
     }
     loadingView.detailsLabelText = text;
+    loadingView.userInteractionEnabled = !touchEnabled;
     [loadingView show:YES];
 }
 

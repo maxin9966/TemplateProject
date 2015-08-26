@@ -24,6 +24,7 @@
 
 //正在加载
 - (void)showLoadingTips:(NSString*)text;
+- (void)showLoadingTips:(NSString*)text touchEnabled:(BOOL)touchEnabled;
 - (void)hideLoadingTips;
 
 //移除所有提示

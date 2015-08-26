@@ -9,6 +9,9 @@
 #import "MainViewController.h"
 #import "ImageTableViewCell.h"
 #import "TestViewController.h"
+#import "IMViewController.h"
+
+#import "IMManager.h"
 
 @interface MainViewController ()
 <UITableViewDataSource,UITableViewDelegate>
@@ -47,9 +50,30 @@
     bgBtn.backgroundColor = [UIColor redColor];
     [self.view addSubview:bgBtn];
     bgBtn.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    [bgBtn addTarget:self action:@selector(pushToTest) forControlEvents:UIControlEventTouchUpInside];
+    [bgBtn addTarget:self action:@selector(sendMsg) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *imBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    imBtn.backgroundColor = [UIColor blueColor];
+    imBtn.frame = CGRectMake(SCREEN_WIDTH/2-50, 300, 100, 50);
+    [imBtn setTitle:@"IM" forState:UIControlStateNormal];
+    [self.view addSubview:imBtn];
+    [imBtn addTarget:self action:@selector(pushToIM) forControlEvents:UIControlEventTouchUpInside];
     
     [MXDefaultNotificationCenter addObserver:self selector:@selector(receivedMXNotification:) name:TestNotification object:nil];
+}
+
+- (void)sendMsg
+{
+    NSString *mesStr = @"Hello";
+    NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
+    [body setStringValue:mesStr];
+    
+    NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
+    [message addAttributeWithName:@"type" stringValue:@"chat"];
+    [message addAttributeWithName:@"to" stringValue:[@"zhangsan" stringByAppendingString:[NSString stringWithFormat:@"@%@",XMPPServer]]];
+    [message addChild:body];
+    
+    [[IMManager sharedInstance].xmppStream sendElement:message];
 }
 
 - (void)receivedMXNotification:(MXNotification*)notification
@@ -61,6 +85,12 @@
 {
     TestViewController *testVC = [TestViewController new];
     [self.navigationController pushViewController:testVC animated:YES];
+}
+
+- (void)pushToIM
+{
+    IMViewController *vc = [IMViewController new];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

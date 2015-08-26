@@ -54,7 +54,7 @@
     return btnItem;
 }
 
-//剩余内存显示
+//内存占用 字节
 + (int)availableMemory;
 {
     mach_port_t           host_port = mach_host_self();

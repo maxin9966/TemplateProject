@@ -14,6 +14,7 @@
 #import "TouchDetector.h"
 #import <FIR/FIR.h>
 #import "WelcomeView.h"
+#import "IMManager.h"
 
 @interface AppDelegate ()
 

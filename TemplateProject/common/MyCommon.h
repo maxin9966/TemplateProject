@@ -92,7 +92,7 @@
 //图片管理器
 + (PUImageManager*)imageManager;
 
-//剩余内存
+//内存占用 字节
 + (int)availableMemory;
 
 //save userDefault
