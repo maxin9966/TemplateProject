@@ -25,15 +25,24 @@
     // Do any additional setup after loading the view.
     
     if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.interactivePopGestureRecognizer.delegate = nil;
+        [self setInteractivePopGestureRecognizer];
+        //解决button某些事件不触发的问题
+        self.interactivePopGestureRecognizer.delaysTouchesBegan = NO;
     }
     completionArray = [NSMutableArray array];
-    //self.delegate = self;
+    self.delegate = self;//bug ???
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)setInteractivePopGestureRecognizer
+{
+    if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.interactivePopGestureRecognizer.delegate = self;
+    }
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -70,6 +79,18 @@
             break;
         }
     }
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        if(gestureRecognizer == self.interactivePopGestureRecognizer){
+            //[[UIApplication sharedApplication].keyWindow endEditing:YES];
+            [DefaultNotificationCenter postNotificationName:NotiNavigationPopGestureWillBegin object:nil userInfo:nil];
+        }
+    }
+    return YES;
 }
 
 @end

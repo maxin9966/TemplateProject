@@ -23,11 +23,15 @@
 //画线
 - (UIView*)drawLineInRect:(CGRect)rect color:(UIColor *)color;
 
+- (void)removeAllLine;
+
 //坐标
 - (CGFloat)bottomY;
 - (CGFloat)topY;
 - (CGFloat)leftX;
 - (CGFloat)rightX;
+- (CGFloat)frameWidth;
+- (CGFloat)frameHeight;
 
 - (void)setFrameWidth:(CGFloat)newWidth;
 - (void)setFrameHeight:(CGFloat)newHeight;

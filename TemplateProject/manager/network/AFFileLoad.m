@@ -38,7 +38,7 @@
 {
     //NSString *path = @"file/updateFiles.action";
     //NSString *server = [ServerBaseURL stringByAppendingString:path];
-    NSString *server = @"http://112.124.47.195/updateFile/update.action";
+    NSString *server = [FileServerBaseURL stringByAppendingString:@"updateFile/update.action"];
     NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:server parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:data name:@"fileData" fileName:fileName mimeType:mimeType];
     } error:nil];

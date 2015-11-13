@@ -10,6 +10,7 @@
 #import "objc/runtime.h"
 
 static char zoomRatio;
+static char MXLineArray;
 
 @implementation UIView (Utility)
 
@@ -100,6 +101,16 @@ static char zoomRatio;
     return self.frame.origin.x+self.frame.size.width;
 }
 
+- (CGFloat)frameWidth
+{
+    return self.frame.size.width;
+}
+
+- (CGFloat)frameHeight
+{
+    return self.frame.size.height;
+}
+
 - (void)setFrameWidth:(CGFloat)newWidth {
     CGRect f = self.frame;
     f.size.width = newWidth;
@@ -131,7 +142,22 @@ static char zoomRatio;
     UIView *line = [[UIView alloc] initWithFrame:rect];
     line.backgroundColor = color;
     [self addSubview:line];
+    NSMutableArray *lineArr = objc_getAssociatedObject(self, &MXLineArray);
+    if(!lineArr){
+        lineArr = [NSMutableArray array];
+        objc_setAssociatedObject(self, &MXLineArray, lineArr, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    [lineArr addObject:line];
     return line;
+}
+
+- (void)removeAllLine
+{
+    NSMutableArray *lineArr = objc_getAssociatedObject(self, &MXLineArray);
+    for(UIView *view in lineArr){
+        [view removeFromSuperview];
+    }
+    [lineArr removeAllObjects];
 }
 
 @end

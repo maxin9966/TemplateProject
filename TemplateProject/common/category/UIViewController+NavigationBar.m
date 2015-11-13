@@ -29,7 +29,7 @@ static const CGFloat navigationButtonWidth = 50.f;
 {
     if(![self navigationBar]){
         UIView *navigationBar = [[UIView alloc] init];
-        navigationBar.backgroundColor = navigationBarBgColor;
+        navigationBar.backgroundColor = LT_NavigationBarBgColor;
         [self.view addSubview:navigationBar];
         
         UIImageView *bgImageView = [[UIImageView alloc] init];
@@ -38,19 +38,19 @@ static const CGFloat navigationButtonWidth = 50.f;
         [navigationBar addSubview:bgImageView];
         
         UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [leftBtn setTitleColor:navigationBarTitleColor forState:UIControlStateNormal];
-        [leftBtn.titleLabel setFont:navigationBarButtonTitleFont];
+        [leftBtn setTitleColor:LT_NavigationBarTitleColor forState:UIControlStateNormal];
+        [leftBtn.titleLabel setFont:LT_NavigationBarTitleFont];
         [navigationBar addSubview:leftBtn];
         
         UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [rightBtn setTitleColor:navigationBarTitleColor forState:UIControlStateNormal];
-        [rightBtn.titleLabel setFont:navigationBarButtonTitleFont];
+        [rightBtn setTitleColor:LT_NavigationBarTitleColor forState:UIControlStateNormal];
+        [rightBtn.titleLabel setFont:LT_NavigationBarTitleFont];
         [navigationBar addSubview:rightBtn];
         
         UILabel *titleLabel = [[UILabel alloc] init];
         titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.font = navigationBarTitleFont;
-        titleLabel.textColor = navigationBarTitleColor;
+        titleLabel.font = LT_NavigationBarTitleFont;
+        titleLabel.textColor = LT_NavigationBarTitleColor;
         [navigationBar addSubview:titleLabel];
         
         objc_setAssociatedObject(self, navigationBarLeftButtonKey, leftBtn, OBJC_ASSOCIATION_RETAIN_NONATOMIC);

@@ -13,6 +13,8 @@
 //是否存在相同的object
 - (BOOL)hasObj:(id<NSObject>)object;
 
+- (id)objectAtIndexSafely:(NSUInteger)index;
+
 @end
 
 @interface NSMutableArray (Utility)

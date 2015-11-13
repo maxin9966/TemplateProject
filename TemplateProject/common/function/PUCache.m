@@ -57,7 +57,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
         _fileManager = [[NSFileManager alloc] init];
         
         [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
-
+        
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(clearMemory)
@@ -116,12 +116,23 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
 }
 
 #pragma mark - Store Image
+- (void)storeImageToMemCache:(UIImage *)image forKey:(NSString *)key
+{
+    if (!image || !key) {
+        return;
+    }
+    //内存缓存
+    @synchronized (self) {
+        [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+    }
+}
+
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key{
     if (!image || !key) {
         return;
-    }    
+    }
     //内存缓存
-    [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+    [self storeImageToMemCache:image forKey:key];
     //硬盘缓存
     NSData *data = nil;
     if (image) {
@@ -139,7 +150,9 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     UIImage *image = [self imageForKey:key];
     //内存缓存
     if(image){
-        [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+        @synchronized (self) {
+            [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
+        }
     }
 }
 
@@ -175,11 +188,26 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     if(!key.length){
         return NO;
     }
-    id object = [self.memCache objectForKey:key];
-    if(object){
+    BOOL exist = [self memExistsWithKey:key];
+    if(exist){
         return YES;
     }
     return [self diskExistsWithKey:key];
+}
+
+- (BOOL)memExistsWithKey:(NSString *)key
+{
+    if(!key.length){
+        return NO;
+    }
+    id object = nil;
+    @synchronized (self) {
+        object = [self.memCache objectForKey:key];
+    }
+    if(object){
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)diskExistsWithKey:(NSString *)key {
@@ -194,7 +222,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
 
 #pragma mark - GetCacheForKey
 /*
-    data
+ data
  */
 - (NSData *)dataFromDiskForKey:(NSString *)key {
     if(!key.length){
@@ -209,7 +237,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
 }
 
 /*
-    image
+ image
  */
 
 //内存
@@ -217,7 +245,11 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     if(!key.length){
         return nil;
     }
-    return [self.memCache objectForKey:key];
+    UIImage *image = nil;
+    @synchronized (self) {
+        image = [self.memCache objectForKey:key];
+    }
+    return image;
 }
 
 //硬盘
@@ -251,7 +283,9 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     UIImage *diskImage = [self imageFromDiskForKey:key];
     if (diskImage) {
         CGFloat cost = diskImage.size.height * diskImage.size.width * diskImage.scale;
-        [self.memCache setObject:diskImage forKey:key cost:cost];
+        @synchronized (self) {
+            [self.memCache setObject:diskImage forKey:key cost:cost];
+        }
     }
     
     return diskImage;
@@ -263,23 +297,33 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     if (key == nil) {
         return;
     }
-    [self.memCache removeObjectForKey:key];
+    @synchronized (self) {
+        [self.memCache removeObjectForKey:key];
+    }
     
     [_fileManager removeItemAtPath:[self cachePathForKey:key] error:nil];
 }
 
 #pragma mark - clear
 - (void)setMaxMemoryCost:(NSUInteger)maxMemoryCost {
-    self.memCache.totalCostLimit = maxMemoryCost;
+    @synchronized (self) {
+        self.memCache.totalCostLimit = maxMemoryCost;
+    }
 }
 
 - (NSUInteger)maxMemoryCost {
-    return self.memCache.totalCostLimit;
+    NSUInteger totalCostLimit = 0;
+    @synchronized (self) {
+        totalCostLimit = self.memCache.totalCostLimit;
+    }
+    return totalCostLimit;
 }
 
 //清空内存缓存
 - (void)clearMemory {
-    [self.memCache removeAllObjects];
+    @synchronized (self) {
+        [self.memCache removeAllObjects];
+    }
 }
 
 //清空缓存
@@ -389,7 +433,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     __block NSUInteger count = 0;
     NSDirectoryEnumerator *fileEnumerator = [_fileManager enumeratorAtPath:self.diskCachePath];
     count = [[fileEnumerator allObjects] count];
-
+    
     return count;
 }
 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 Admin. All rights reserved.
 //
 
-#import "VideoPlayerView.h"
+#import "MXVideoPlayer.h"
 //#import <MediaPlayer/MediaPlayer.h>
 //#import "ALMoviePlayerController.h"
 #import <AVFoundation/AVFoundation.h>
@@ -16,7 +16,7 @@
 
 static NSString *operationKey = @"videoThumbnailOperationKey";
 
-@interface VideoPlayerView()
+@interface MXVideoPlayer()
 <UIAlertViewDelegate,MoviePlayerControllerDelegate>
 {
     MoviePlayerController *player;
@@ -26,7 +26,7 @@ static NSString *operationKey = @"videoThumbnailOperationKey";
 
 @end
 
-@implementation VideoPlayerView
+@implementation MXVideoPlayer
 @synthesize url;
 @synthesize delegate;
 @synthesize thumbnail;
@@ -145,8 +145,8 @@ static NSString *operationKey = @"videoThumbnailOperationKey";
 - (void)moviePlayerControllerMovieFinished
 {
     [self stop];
-    if(delegate && [delegate respondsToSelector:@selector(videoPlayerViewDelegatePlaybackDidFinish)]){
-        [delegate videoPlayerViewDelegatePlaybackDidFinish];
+    if(delegate && [delegate respondsToSelector:@selector(videoPlayerDelegatePlaybackDidFinish)]){
+        [delegate videoPlayerDelegatePlaybackDidFinish];
     }
 }
 

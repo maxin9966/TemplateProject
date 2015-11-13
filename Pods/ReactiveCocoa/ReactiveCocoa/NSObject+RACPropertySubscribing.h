@@ -52,6 +52,12 @@
 		[target_ rac_valuesForKeyPath:@keypath(TARGET, KEYPATH) observer:self]; \
 	})
 
+#define RACObserveOptionNew(TARGET, KEYPATH) \
+    ({ \
+        __weak id target_ = (TARGET); \
+        [target_ rac_valuesForKeyPath:@keypath(TARGET, KEYPATH) options:NSKeyValueObservingOptionNew observer:self]; \
+    })
+
 @class RACDisposable;
 @class RACSignal;
 
@@ -66,6 +72,8 @@
 /// Returns a signal that immediately sends the receiver's current value at the
 /// given keypath, then any changes thereafter.
 - (RACSignal *)rac_valuesForKeyPath:(NSString *)keyPath observer:(__weak NSObject *)observer;
+
+- (RACSignal *)rac_valuesForKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options observer:(__weak NSObject *)observer;
 
 /// Creates a signal to observe the changes of the given key path.
 ///

@@ -43,9 +43,9 @@
 {
     NSMutableDictionary *normalDict = [[UINavigationBar appearance].titleTextAttributes mutableCopy];
     NSMutableDictionary *highlightedDict = [[UINavigationBar appearance].titleTextAttributes mutableCopy];
-    [normalDict setObject:navigationBarTitleFont forKey:NSFontAttributeName];
-    [highlightedDict setObject:navigationBarTitleFont forKey:NSFontAttributeName];
-    [highlightedDict setObject:navigationBarTitleColor forKey:NSForegroundColorAttributeName];
+    [normalDict setObject:LT_NavigationBarTitleFont forKey:NSFontAttributeName];
+    [highlightedDict setObject:LT_NavigationBarTitleFont forKey:NSFontAttributeName];
+    [highlightedDict setObject:LT_NavigationBarTitleColor forKey:NSForegroundColorAttributeName];
     [normalDict removeObjectForKey:NSShadowAttributeName];
     [highlightedDict removeObjectForKey:NSShadowAttributeName];
     UIBarButtonItem *btnItem = [[UIBarButtonItem alloc]initWithTitle:title style:UIBarButtonItemStylePlain target:target action:selector];

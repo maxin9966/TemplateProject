@@ -41,7 +41,7 @@ typedef void(^PUCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalSize);
 
 //isExist
 - (BOOL)existsWithKey:(NSString *)key;
-
+- (BOOL)memExistsWithKey:(NSString *)key;
 - (BOOL)diskExistsWithKey:(NSString *)key;
 
 //store
@@ -50,6 +50,8 @@ typedef void(^PUCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalSize);
 - (void)moveImageFile:(NSString *)imagePath forKey:(NSString *)key;
 
 - (void)store:(NSData *)data forKey:(NSString *)key;
+
+- (void)storeImageToMemCache:(UIImage *)image forKey:(NSString *)key;
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key;
 

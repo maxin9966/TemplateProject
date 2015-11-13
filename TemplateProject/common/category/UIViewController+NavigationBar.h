@@ -12,7 +12,18 @@
 
 - (UIView*)navigationBar;
 
+- (UIImageView*)backgroundImageView;
+
+- (UILabel*)titleLabel;
+
+- (UIButton*)leftButton;
+
+- (UIButton*)rightButton;
+
+
 - (void)installNavigationBar;
+
+- (void)installCustomNavigationBar;
 
 - (void)installBackButton;
 

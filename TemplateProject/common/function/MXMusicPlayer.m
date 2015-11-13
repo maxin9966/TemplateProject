@@ -12,18 +12,18 @@
 
 @interface MXMusicPlayer()
 <AVAudioPlayerDelegate>
-{
-    AVAudioPlayer *player;    
-    NSTimer *timer;
-    TCBlobDownloader *operation;
-    NSData *audioData;
-}
+
+@property (nonatomic,strong) AVAudioPlayer *player;
+@property (nonatomic,strong) NSTimer *timer;
+@property (nonatomic,strong) NSOperation *operation;
+@property (nonatomic,strong) NSData *audioData;
 
 @end
 
 @implementation MXMusicPlayer
 @synthesize delegate;
 @synthesize currentTime,duration;
+@synthesize player,timer,operation,audioData;
 
 + (id)sharedInstance {
     static MXMusicPlayer *sharedManager = nil;
@@ -171,17 +171,22 @@
             if(delegate && [delegate respondsToSelector:@selector(musicPlayerDelegateBeginDownload)]){
                 [delegate musicPlayerDelegateBeginDownload];
             }
+            __weak typeof(self)weakSelf = self;
             operation = [[MyCommon audioManager] downloadFileWithUrl:_url progress:nil completed:^(NSString *filePath, NSError *error) {
-                if(!operation.isCancelled){
-                    audioData = [NSData dataWithContentsOfFile:filePath];
-                    if(audioData){
-                        //播放
-                        [self playMusic];
-                    }else{
-                        //失败
-                        [self errorCallBack];
-                    }
-                }
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    weakSelf.audioData = [NSData dataWithContentsOfFile:filePath];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if(!weakSelf.operation.isCancelled){
+                            if(weakSelf.audioData){
+                                //播放
+                                [weakSelf playMusic];
+                            }else{
+                                //失败
+                                [weakSelf errorCallBack];
+                            }
+                        }
+                    });
+                });
             }];
         }
     }

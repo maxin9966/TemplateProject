@@ -40,6 +40,15 @@ static char imageOperationKey;
     
     self.image = placeholder;
     
+    if([urlString isKindOfClass:[NSURL class]]){
+        NSURL *url = (NSURL*)urlString;
+        if([url isFileURL]){
+            urlString = [url path];
+        }else{
+            urlString = [url absoluteString];
+        }
+    }
+    
     if(!urlString.length){
         dispatch_async(dispatch_get_main_queue(), ^{
             if(completedBlock){
@@ -49,41 +58,52 @@ static char imageOperationKey;
         return;
     }
     
-    if([urlString isKindOfClass:[NSURL class]]){
-        NSURL *url = (NSURL*)urlString;
-        urlString = [url absoluteString];
-    }
-    
     objc_setAssociatedObject(self, &imageUrlKey, urlString, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     __weak UIImageView *wself = self;
-    TCBlobDownloader *operation = [[MyCommon imageManager] downloadImageWithUrl:[NSURL URLWithString:urlString] progress:^(CGFloat progress) {
-        if(progressBlock){
-            progressBlock(progress);
-        }
-    } completed:^(UIImage *image, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(image && !error){
-                if (!wself) return;
-                [self setImage:image];
-                [self setNeedsLayout];
+    NSOperation *operation = nil;
+    if([urlString isAbsolutePath]){
+        //读取本地图片
+        operation = [[MyCommon imageManager] loadImageWithFilePath:urlString completed:^(UIImage *image, NSError *error) {
+            [wself doneWithImage:image error:error completed:completedBlock];
+        }];
+    }else{
+        //下载并缓存图片
+        operation = [[MyCommon imageManager] downloadImageWithUrl:[NSURL URLWithString:urlString] progress:^(CGFloat progress) {
+            if(progressBlock){
+                progressBlock(progress);
             }
-            if (completedBlock) {
-                completedBlock(image, error);
-            }
-            objc_setAssociatedObject(self, &imageOperationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        });
-    }];
+        } completed:^(UIImage *image, NSError *error) {
+            [wself doneWithImage:image error:error completed:completedBlock];
+        }];
+    }
     objc_setAssociatedObject(self, &imageOperationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)doneWithImage:(UIImage*)image error:(NSError*)error completed:(ImageDownloaderCompletionBlock)completedBlock
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(image && !error){
+            if (!self) return;
+            [self setImage:image];
+            [self setNeedsLayout];
+        }
+        if (completedBlock) {
+            completedBlock(image, error);
+        }
+        objc_setAssociatedObject(self, &imageOperationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    });
 }
 
 - (void)mx_cancelCurrentImageLoad
 {
-    TCBlobDownloader *op = objc_getAssociatedObject(self, &imageOperationKey);
+    NSOperation *op = objc_getAssociatedObject(self, &imageOperationKey);
     if(op && !op.isCancelled){
         [op cancel];
     }
-    objc_removeAssociatedObjects(self);
+//    objc_removeAssociatedObjects(self);
+    objc_setAssociatedObject(self, &imageUrlKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &imageOperationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

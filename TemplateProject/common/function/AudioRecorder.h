@@ -18,6 +18,10 @@
 
 - (void)audioRecorderDidRecordedByPath:(NSString*)audioPath duration:(int)duration;
 
+- (void)audioRecorderDidFailedWithError:(NSError*)error;
+
+- (void)audioRecorderVolumeProgressChanged:(CGFloat)volumeProgress;
+
 @end
 
 @interface AudioRecorder : NSObject

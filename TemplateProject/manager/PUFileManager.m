@@ -7,17 +7,13 @@
 //
 
 #import "PUFileManager.h"
-#import "PUCache.h"
 
 @interface PUFileManager()
-{
-    //缓存管理器
-    PUCache *cacheManager;
-}
 
 @end
 
 @implementation PUFileManager
+@synthesize cacheManager;
 
 - (instancetype)initWithNamespace:(NSString*)ns
 {
@@ -32,7 +28,7 @@
 }
 
 //下载
-- (TCBlobDownloader*)downloadFileWithUrl:(NSURL*)url
+- (NSOperation*)downloadFileWithUrl:(NSURL*)url
                               progress:(DownloadProgressBlock)progressBlock
                              completed:(DownloadCompletionBlock)completedBlock;
 {

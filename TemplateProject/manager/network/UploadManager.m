@@ -54,8 +54,10 @@
           progress:(UploadProgressBlock)progressBlock
         completion:(void (^)(NSString* urlString, NSError* error))completion;
 {
-    NSString *path = @"file/updateFiles.action";
-    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:[ServerBaseURL stringByAppendingString:path] parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    //NSString *path = @"file/updateFiles.action";
+    NSString *path = @"updateFile/update.action";
+    NSString *urlString = [FileServerBaseURL stringByAppendingString:path];
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:urlString parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:data name:@"fileData" fileName:fileName mimeType:mimeType];
     } error:nil];
     

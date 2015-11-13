@@ -7,17 +7,17 @@
 //
 
 #import "PUImageManager.h"
-#import "PUCache.h"
+#import "PULoadImageOperation.h"
 
 @interface PUImageManager()
 {
-    //缓存管理器
-    PUCache *cacheManager;
+    NSOperationQueue *queue;
 }
 
 @end
 
 @implementation PUImageManager
+@synthesize cacheManager;
 
 - (instancetype)initWithNamespace:(NSString*)ns
 {
@@ -27,14 +27,39 @@
     self = [super init];
     if(self){
         cacheManager = [[PUCache alloc] initWithNamespace:ns];
+        queue = [[NSOperationQueue alloc] init];
+        queue.maxConcurrentOperationCount = 3;
     }
     return self;
 }
 
+//读取本地图片
+- (NSOperation*)loadImageWithFilePath:(NSString*)filePath
+                            completed:(ImageDownloaderCompletionBlock)completedBlock
+{
+    PULoadImageOperation *op = nil;
+    BOOL isExist = [cacheManager memExistsWithKey:filePath];
+    if(isExist){
+        UIImage *image = [cacheManager imageFromMemoryCacheForKey:filePath];
+        if(completedBlock){
+            completedBlock(image,nil);
+        }
+    }else{
+        op = [[PULoadImageOperation alloc] initWithFilePath:filePath completion:^(UIImage *image, NSError *error) {
+            if(completedBlock){
+                completedBlock(image,error);
+            }
+            [cacheManager storeImage:image forKey:filePath];
+        }];
+        [queue addOperation:op];
+    }
+    return op;
+}
+
 //图片下载并缓存
-- (TCBlobDownloader*)downloadImageWithUrl:(NSURL*)url
-                               progress:(DownloadProgressBlock)progressBlock
-                              completed:(ImageDownloaderCompletionBlock)completedBlock
+- (NSOperation*)downloadImageWithUrl:(NSURL*)url
+                            progress:(DownloadProgressBlock)progressBlock
+                           completed:(ImageDownloaderCompletionBlock)completedBlock
 {
     if(!url){
         completedBlock(nil,[NSError new]);

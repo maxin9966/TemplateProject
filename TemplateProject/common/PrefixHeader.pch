@@ -19,13 +19,13 @@
 #import "HttpRequest.h"
 #import "ReactiveCocoa.h"
 #import "AFFileLoad.h"
-
 #import "BaseViewController.h"
 
 #endif
 
-//#define ServerBaseURL @"http://192.168.1.240:8080/meiyue/"             //测试
-#define ServerBaseURL @"http://120.26.105.157/yourProject/"         //正式
+//#define ServerBaseURL @"http://192.168.1.240:8080/meiyue/"              //测试
+#define ServerBaseURL @"http://120.26.105.157/yourProject/"             //正式
+#define FileServerBaseURL @"http://112.124.47.195/"                     //图片服务器
 
 /**
  
@@ -52,37 +52,43 @@
 #define LT_Color_TextTitle RGBA(35, 24, 21, 1)
 #define LT_Color_TextContent RGBA(89, 87, 87, 1)
 
-#define navigationBarBgColor RGBA(255, 255, 255, 1)
-#define navigationBarTitleColor LT_Color_LightGray
+#define LT_NavigationBarBgColor RGBA(255, 255, 255, 1)
+#define LT_NavigationBarTitleColor LT_Color_LightGray
 
 //字体
-#define LT_Medium_FontName @"STHeitiJ-Medium"
-#define LT_Light_FontName @"STHeitiJ-Light"
+#define LT_Bold_FontName @"Helvetica-Bold"
+#define LT_Light_FontName @"Helvetica"
 
-#define navigationBarTitleFont [UIFont boldSystemFontOfSize:16]
-#define navigationBarButtonTitleFont [UIFont boldSystemFontOfSize:16]
+#define LT_NavigationBarTitleFont [UIFont boldSystemFontOfSize:16]
+#define LT_NavigationBarButtonTitleFont [UIFont boldSystemFontOfSize:16]
 
-//照片最大尺寸
+//头像照片最大尺寸
 #define Avatar_MAX_SIDE_LENGTH 400.0
 //图片压缩率
 #define PhotoCompressionRatio 0.6
 //最大分辨率
-#define Photo_MAX_SIZE (1200.0*1200.0)
+#define Photo_MAX_SIZE (1000.0*1000.0)
 
 //时间系数
 #define TimeFactor 0.001
 
 /**
  
+ response
+ 
+ */
+
+#define kResponseData @"data"
+
+/**
+ 
  notification
  
  */
-#define kResponseData @"data"
 
 #define NotiDidLogin                    @"NotiDidLogin"
 #define NotiDidLogout                   @"NotiDidLogout"
 #define NotiDidRegister                 @"NotiDidRegister"
-
 #define NotiRequestNeedLogin            @"NotiRequestNeedLogin"     //需要登录
 
 /**

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "DownloadManager.h"
+#import "PUCache.h"
 
 /**
  
@@ -19,10 +20,16 @@ typedef void(^ImageDownloaderCompletionBlock)(UIImage *image,NSError *error);
 
 @interface PUImageManager : NSObject
 
+@property (nonatomic,strong) PUCache *cacheManager;
+
 - (instancetype)initWithNamespace:(NSString*)ns;
 
+//读取本地图片
+- (NSOperation*)loadImageWithFilePath:(NSString*)filePath
+                            completed:(ImageDownloaderCompletionBlock)completedBlock;
+
 //图片下载并缓存
-- (TCBlobDownloader*)downloadImageWithUrl:(NSURL*)url
+- (NSOperation*)downloadImageWithUrl:(NSURL*)url
                                progress:(DownloadProgressBlock)progressBlock
                               completed:(ImageDownloaderCompletionBlock)completedBlock;
 

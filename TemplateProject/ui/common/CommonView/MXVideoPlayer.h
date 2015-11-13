@@ -1,5 +1,5 @@
 //
-//  VideoPlayerView.h
+//  MXVideoPlayer.h
 //  MeiMei
 //
 //  Created by 马鑫 on 14-4-22.
@@ -14,22 +14,22 @@
 
 #define ControlsOffsetY -28
 
-typedef NS_ENUM(NSUInteger, VideoPlayMode) {
-    VideoPlayModeDefault = 0,
-    VideoPlayModeFullScreen = 1
+typedef NS_ENUM(NSUInteger, VideoPlayerMode) {
+    VideoPlayerModeDefault = 0,
+    VideoPlayerModeFullScreen = 1
 };
 
-@protocol VideoPlayerViewDelegate <NSObject>
+@protocol MXVideoPlayerDelegate <NSObject>
 
-- (void)videoPlayerViewDelegatePlaybackDidFinish;
+- (void)videoPlayerDelegatePlaybackDidFinish;
 
 @end
 
-@interface VideoPlayerView : UIView
+@interface MXVideoPlayer : UIView
 
 @property (nonatomic,strong) NSURL *url;
-@property (nonatomic,weak) id<VideoPlayerViewDelegate> delegate;
-@property (nonatomic,assign) VideoPlayMode playMode;
+@property (nonatomic,weak) id<MXVideoPlayerDelegate> delegate;
+@property (nonatomic,assign) VideoPlayerMode playerMode;
 
 @property (nonatomic,strong,readonly) UIImage *thumbnail;
 

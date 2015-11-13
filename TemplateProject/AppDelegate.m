@@ -35,9 +35,9 @@
     viewController = [[MainViewController alloc] init];
     navigationVC = [[MXNavigationController alloc] initWithRootViewController:viewController];
     navigationVC.navigationBarHidden = YES;
-    [navigationVC.navigationBar setBgColor:navigationBarBgColor];
-    navigationVC.navigationBar.tintColor = navigationBarTitleColor;
-    [navigationVC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : navigationBarTitleColor}];
+    [navigationVC.navigationBar setBgColor:LT_NavigationBarBgColor];
+    navigationVC.navigationBar.tintColor = LT_NavigationBarTitleColor;
+    [navigationVC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : LT_NavigationBarTitleColor}];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.rootViewController = navigationVC;

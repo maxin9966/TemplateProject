@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSUInteger, MXStringPosition) {
+    MXStringPositionFront,
+    MXStringPositionMiddle,
+    MXStringPositionEnding,
+};
+
 @interface NSString (Utility)
 
 - (BOOL)isChinese;
@@ -16,6 +22,11 @@
 
 //忽略nil
 - (BOOL)noNilEqualToString:(NSString*)aString;
+
+//隐藏某段 用字符替代
+- (NSString*)hideInPosition:(MXStringPosition)positionType number:(NSUInteger)number replaceChar:(unichar)aChar;
+
+- (NSURL*)url;
 
 @end
 

@@ -22,13 +22,17 @@
 @implementation NSObject (RACPropertySubscribing)
 
 - (RACSignal *)rac_valuesForKeyPath:(NSString *)keyPath observer:(__weak NSObject *)observer {
-	return [[[self
-		rac_valuesAndChangesForKeyPath:keyPath options:NSKeyValueObservingOptionInitial observer:observer]
-		map:^(RACTuple *value) {
-			// -map: because it doesn't require the block trampoline that -reduceEach: uses
-			return value[0];
-		}]
-		setNameWithFormat:@"RACObserve(%@, %@)", self.rac_description, keyPath];
+    return [self rac_valuesForKeyPath:keyPath options:NSKeyValueObservingOptionInitial observer:observer];
+}
+
+- (RACSignal *)rac_valuesForKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options observer:(__weak NSObject *)observer {
+    return [[[self
+              rac_valuesAndChangesForKeyPath:keyPath options:options observer:observer]
+             map:^(RACTuple *value) {
+                 // -map: because it doesn't require the block trampoline that -reduceEach: uses
+                 return value[0];
+             }]
+            setNameWithFormat:@"RACObserve(%@, %@)", self.rac_description, keyPath];
 }
 
 - (RACSignal *)rac_valuesAndChangesForKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options observer:(__weak NSObject *)weakObserver {

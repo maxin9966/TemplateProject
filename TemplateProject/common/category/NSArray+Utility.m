@@ -24,6 +24,14 @@
     return NO;
 }
 
+- (id)objectAtIndexSafely:(NSUInteger)index
+{
+    if(self.count<=index){
+        return nil;
+    }
+    return [self objectAtIndex:index];
+}
+
 @end
 
 @implementation NSMutableArray (Utility)

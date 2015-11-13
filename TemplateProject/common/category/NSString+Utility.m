@@ -39,6 +39,45 @@
     return [string_1 isEqualToString:string_2];
 }
 
+//隐藏某段 用字符替代
+- (NSString*)hideInPosition:(MXStringPosition)positionType number:(NSUInteger)number replaceChar:(unichar)aChar
+{
+    if(!self.length){
+        return self;
+    }
+    NSUInteger loc = 0;
+    NSUInteger len = 0;
+    len = number>self.length?self.length:number;
+    switch (positionType) {
+        case MXStringPositionFront:
+            loc = 0;
+            break;
+        case MXStringPositionMiddle:
+            loc = self.length/2-len/2;
+            break;
+        case MXStringPositionEnding:
+            loc = self.length-len;
+            break;
+        default:
+            break;
+    }
+    NSRange range = NSMakeRange(loc, len);
+    NSMutableString *charString = [NSMutableString string];
+    for(int i=0;i<len;i++){
+        [charString appendFormat:@"%c",aChar];
+    }
+    return [self stringByReplacingCharactersInRange:range withString:charString];
+}
+
+- (NSURL*)url
+{
+    if(self.isAbsolutePath){
+        return [NSURL fileURLWithPath:self];
+    }else{
+        return [NSURL URLWithString:self];
+    }
+}
+
 @end
 
 @implementation NSString (Serializable)

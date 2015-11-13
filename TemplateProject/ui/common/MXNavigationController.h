@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+#define NotiNavigationPopGestureWillBegin @"NotiNavigationPopGestureWillBegin"
+
 typedef void(^PushCompletionBlock)();
 
 @interface MXNavigationController : UINavigationController
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(PushCompletionBlock)completion;
+
+- (void)setInteractivePopGestureRecognizer;
 
 @end

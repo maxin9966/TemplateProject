@@ -32,6 +32,10 @@
 #import "SVPullToRefresh.h"
 #import "AppDelegate.h"
 #import "MXNotificationCenter.h"
+#import "NSTimer+Block.h"
+#import "UIResponder+Router.h"
+#import "NSURL+Utility.h"
+#import "UIViewController+DismissKeyboard.h"
 
 /**
  
@@ -68,8 +72,19 @@
 #define DEGREES_TO_RADIANS(degrees)((M_PI * degrees)/180)
 //是否为iPhone4
 #define isIphone4 (SCREEN_HEIGHT==480)
+#define isIphone5 (SCREEN_WIDTH==320)
 //项目版本号
 #define VERSION [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
+//字体
+#define FONT(s)  [UIFont boldSystemFontOfSize:s]
+//判断是否是模拟器
+#if TARGET_IPHONE_SIMULATOR
+#define SIMULATOR YES
+#elif TARGET_OS_IPHONE
+#define SIMULATOR NO
+#endif
+//常用
+#define DefaultNotificationCenter [NSNotificationCenter defaultCenter]
 
 @interface MyCommon : NSObject
 
@@ -91,6 +106,12 @@
 
 //图片管理器
 + (PUImageManager*)imageManager;
+
+//获取缓存大小
++ (NSUInteger)getDiskCacheSize;
+
+//清除硬盘缓存
++ (void)clearDiskCache;
 
 //内存占用 字节
 + (int)availableMemory;
@@ -140,8 +161,12 @@
 //PCM转MP3
 + (void)audio_PCMtoMP3_WavPath:(NSString*)pcmFilePath MP3Path:(NSString*)mp3FilePath;
 
+//获取失败error
++ (NSError *)getErrorWithFailureReason:(NSString*)reason;
+
 //获取错误信息
 + (NSError*)getErrorWithResponse:(NSDictionary*)dict;
+
 //获取请求失败的error
 + (NSError*)getFailureError:(NSError*)originError;
 
@@ -186,8 +211,13 @@
 + (NSTimeInterval)timeIntervalWithDate:(NSDate*)date;
 
 //屏幕截图
-- (UIImage*)getScreenImageAfterScreenUpdates:(BOOL)afterScreenUpdates;
++ (UIImage*)getScreenImageAfterScreenUpdates:(BOOL)afterScreenUpdates;
+
+//获取文件字符串数据
++ (NSString*)stringWithFileName:(NSString*)fileName ofType:(NSString*)fileType encoding:(NSStringEncoding)encoding;
 
 + (AppDelegate*)appDelegate;
+
++ (NSString *)notRounding:(float)price afterPoint:(NSInteger)position;
 
 @end

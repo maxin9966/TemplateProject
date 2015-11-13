@@ -8,13 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "DownloadManager.h"
+#import "PUCache.h"
 
 @interface PUFileManager : NSObject
+
+@property (nonatomic,strong) PUCache *cacheManager;
 
 - (instancetype)initWithNamespace:(NSString*)ns;
 
 //文件下载并缓存
-- (TCBlobDownloader*)downloadFileWithUrl:(NSURL*)url
+- (NSOperation*)downloadFileWithUrl:(NSURL*)url
                               progress:(DownloadProgressBlock)progressBlock
                              completed:(DownloadCompletionBlock)completedBlock;
 
