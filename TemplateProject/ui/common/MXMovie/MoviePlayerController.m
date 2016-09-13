@@ -13,20 +13,22 @@
 
 @interface MoviePlayerController()
 <VKScrubberDelegate>
-{
-    UIActivityIndicatorView *loading;
-    NSTimer *timer;
-        
-    //窗口切换
-    CGRect originFrame;
-    UIView *originSuperView;
-}
+
+@property (nonatomic,strong) UIActivityIndicatorView *loading;
+@property (nonatomic,strong) NSTimer *timer;
+//窗口切换
+@property (nonatomic,assign) CGRect originFrame;
+@property (nonatomic,strong) UIView *originSuperView;
+
+@property (nonatomic,strong) UIButton *playVideoButton;
+
+@property (nonatomic,strong) UIButton *bgBtn;
 
 @end
 
 @implementation MoviePlayerController
 @synthesize delegate;
-@synthesize state;
+@synthesize state,loading,timer,originFrame,originSuperView,playVideoButton;
 
 - (id)init {
     return [self initWithFrame:CGRectZero];
@@ -37,6 +39,7 @@
         
         self.thumbImageView = [[UIImageView alloc] init];
         self.thumbImageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.thumbImageView.clipsToBounds = YES;
         [self.view addSubview:self.thumbImageView];
         
         //controls
@@ -59,6 +62,11 @@
     return self;
 }
 
+- (void)bgButtonClicked
+{
+    [self stop];
+}
+
 - (void)setControlsOffsetY:(CGFloat)controlsOffsetY
 {
     _controlsOffsetY = controlsOffsetY;
@@ -69,17 +77,25 @@
 {
     _controlsEnabled = controlsEnabled;
     self.controls.hidden = !controlsEnabled;
+    self.playVideoButton.hidden = !controlsEnabled;
 }
 
 - (void)setFrame:(CGRect)frame
 {
     [self.view setFrame:frame];
+    
+    self.bgBtn.frame = self.view.bounds;
+    
     if(self.controls.fullScreenBtn.selected){
         [self.controls setFrame:CGRectMake(0, frame.size.height-44, frame.size.width, 44)];
     }else{
         [self.controls setFrame:CGRectMake(0, frame.size.height-44+self.controlsOffsetY, frame.size.width, 44)];
     }
+    
     self.thumbImageView.frame = self.view.bounds;
+    
+    CGFloat playSideLength = 64;
+    playVideoButton.frame = CGRectMake(frame.size.width/2-playSideLength/2, frame.size.height/2-playSideLength/2, playSideLength, playSideLength);
     
     CGFloat loadingSideLength = 30;
     loading.frame = CGRectMake(frame.size.width/2-loadingSideLength/2, frame.size.height/2-loadingSideLength/2, loadingSideLength, loadingSideLength);
@@ -93,13 +109,12 @@
     [super setContentURL:url];
     self.state = [self.contentURL.scheme isEqualToString:@"file"] ? MXMoviePlayerControlsStateReady : MXMoviePlayerControlsStateIdle;
     self.thumbImageView.image = nil;
-    
 }
 
 - (void)play
 {
     if(!self.contentURL){
-        [MyCommon showTips:@"数据异常"];
+        [MyCommon showTips:@"数据源异常"];
         return;
     }
     if(![self isLocalURL:self.contentURL]){
@@ -126,28 +141,33 @@
     [[AVAudioSession sharedInstance]setCategory:AVAudioSessionCategorySoloAmbient error:nil];
     self.state = MXMoviePlayerControlsStateLoading;
     [super play];
-    self.controls.playBtn.selected = YES;
+    [self setPlayBtnSelected:YES];
     self.thumbImageView.hidden = YES;
     NSLog(@"video play");
 }
 
 - (void)pause
 {
-    if(self.playbackState == MPMoviePlaybackStatePaused){
-        return;
-    }
+//    if(self.playbackState == MPMoviePlaybackStatePaused){
+//        return;
+//    }
     [super pause];
-    self.controls.playBtn.selected = NO;
+    [self setPlayBtnSelected:NO];
     NSLog(@"video pause");
 }
 
 - (void)stop
 {
-    if(self.playbackState == MPMoviePlaybackStateStopped){
-        return;
+//    if(self.playbackState == MPMoviePlaybackStateStopped){
+//        return;
+//    }
+    if(self.state == MXMoviePlayerControlsStateLoading){
+        [super stop];
+        [self finish];
+    }else{
+        [super stop];
+        [self setPlayBtnSelected:NO];
     }
-    [super stop];
-    self.controls.playBtn.selected = NO;
     NSLog(@"video stop");
 }
 
@@ -161,7 +181,7 @@
 {
     self.state = MXMoviePlayerControlsStateIdle;
     [self resetProgress];
-    self.controls.playBtn.selected = NO;
+    [self setPlayBtnSelected:NO];
     self.thumbImageView.hidden = NO;
     [self hideLoadingIndicators];
 }
@@ -277,8 +297,14 @@
     if(self.controls){
         return;
     }
+    
+    self.bgBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.bgBtn addTarget:self action:@selector(bgButtonClicked) forControlEvents:UIControlEventTouchUpInside];
+    self.bgBtn.userInteractionEnabled = NO;
+    [self.view addSubview:self.bgBtn];
+    
     self.controls = [[MXControls alloc] init];
-    [self.view addSubview:self.controls];
+//    [self.view addSubview:self.controls];
     
     self.controls.scrubber.delegate = self;
     self.controls.scrubber.enabled = NO;
@@ -288,12 +314,20 @@
     //action
     [self.controls.playBtn addTarget:self action:@selector(playBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.controls.fullScreenBtn addTarget:self action:@selector(fullScreenAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //play button
+    playVideoButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [playVideoButton setBackgroundImage:[UIImage imageNamed:@"iconfont-play"] forState:UIControlStateNormal];
+    [playVideoButton setBackgroundImage:[UIImage imageNamed:@"iconfont-stop"] forState:UIControlStateSelected];
+    [playVideoButton addTarget:self action:@selector(playBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:playVideoButton];
 }
 
 //播放按钮
 - (void)playBtnAction:(id)sender
 {
-    if(self.controls.playBtn.selected){
+    UIButton *btn = sender;
+    if(btn.selected){
         [self pause];
     }else{
         [self play];
@@ -303,6 +337,7 @@
 //全屏按钮
 - (void)fullScreenAction:(id)sender
 {
+    __weak typeof(self)wSelf = self;
     self.controls.fullScreenBtn.selected = !self.controls.fullScreenBtn.selected;
     UIWindow *window = [MyCommon normalLevelWindow];
     if(self.controls.fullScreenBtn.selected){
@@ -315,11 +350,11 @@
         [window addSubview:self.view];
         
         [UIView animateWithDuration:0.25 animations:^{
-            CGFloat degrees = [self degreesForOrientation:UIInterfaceOrientationLandscapeRight];
+            CGFloat degrees = [wSelf degreesForOrientation:UIInterfaceOrientationLandscapeRight];
             CGFloat width = window.bounds.size.width;
             CGFloat height = window.bounds.size.height;
-            [self setFrame:CGRectMake(width/2-height/2, height/2-width/2, height, width)];
-            self.view.transform = CGAffineTransformMakeRotation(degreesToRadians(degrees));
+            [wSelf setFrame:CGRectMake(width/2-height/2, height/2-width/2, height, width)];
+            wSelf.view.transform = CGAffineTransformMakeRotation(degreesToRadians(degrees));
         } completion:^(BOOL finished) {
             
         }];
@@ -328,14 +363,40 @@
         CGRect desFrame = [originSuperView convertRect:originFrame toView:window];
         
         [UIView animateWithDuration:0.2 animations:^{
-            CGFloat degrees = [self degreesForOrientation:UIInterfaceOrientationPortrait];
-            self.view.transform = CGAffineTransformMakeRotation(degreesToRadians(degrees));
-            [self setFrame:desFrame];
+            CGFloat degrees = [wSelf degreesForOrientation:UIInterfaceOrientationPortrait];
+            wSelf.view.transform = CGAffineTransformMakeRotation(degreesToRadians(degrees));
+            [wSelf setFrame:desFrame];
         } completion:^(BOOL finished) {
-            [originSuperView addSubview:self.view];
-            [self setFrame:originFrame];
+            [wSelf.originSuperView addSubview:wSelf.view];
+            [wSelf setFrame:wSelf.originFrame];
         }];
     }
+    [self setPlayBtnSelected:self.controls.playBtn.selected];
+}
+
+- (void)setPlayBtnSelected:(BOOL)selected
+{
+    self.controls.playBtn.selected = selected;
+    playVideoButton.selected = selected;
+    self.bgBtn.userInteractionEnabled = selected;
+    __weak typeof(self)wSelf = self;
+    [UIView animateWithDuration:0.15f animations:^{
+        if(selected){
+            //play
+            wSelf.playVideoButton.alpha = 0;
+            wSelf.controls.alpha = 1;
+        }else{
+            if(!self.controls.fullScreenBtn.selected){
+                wSelf.playVideoButton.alpha = 1;
+                wSelf.controls.alpha = 0;
+            }else{
+                wSelf.playVideoButton.alpha = 0;
+                wSelf.controls.alpha = 1;
+            }
+        }
+    } completion:^(BOOL finished) {
+        
+    }];
 }
 
 - (void)startUpdateProgress

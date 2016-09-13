@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
 
+//#define RequestTimeout 30.f
+#define kResponseData @"data"
+
 /**
  
  HTTP请求

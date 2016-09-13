@@ -20,7 +20,6 @@ static NSString *operationKey = @"videoThumbnailOperationKey";
 <UIAlertViewDelegate,MoviePlayerControllerDelegate>
 {
     MoviePlayerController *player;
-    
     XLoader *loader;
 }
 

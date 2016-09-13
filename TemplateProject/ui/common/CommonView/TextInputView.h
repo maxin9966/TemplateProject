@@ -27,6 +27,8 @@
 @property (nonatomic,strong) NSString *placeholder;
 @property (nonatomic,assign) NSUInteger limmitNumber;
 
+@property (nonatomic,strong) IBOutlet UITextField *textField;
+
 - (void)show;
 - (void)dismiss;
 

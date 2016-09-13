@@ -73,7 +73,7 @@
     if(data){
         image = [UIImage imageWithData:data];
         //解析图片
-        [image resizedImageWithSize:CGSizeMake(1, 1)];
+        [image resize:CGSizeMake(1, 1)];
     }
     [self done];
     dispatch_async(dispatch_get_main_queue(), ^{

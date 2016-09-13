@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import "MainViewController.h"
 #import "UserLocation.h"
 #import "UncaughtExceptionHandler.h"
 #import "TouchDetector.h"
@@ -32,7 +31,7 @@
     [self firstOpen];
     
     //初始化界面
-    viewController = [[MainViewController alloc] init];
+    viewController = [[ViewController alloc] init];
     navigationVC = [[MXNavigationController alloc] initWithRootViewController:viewController];
     navigationVC.navigationBarHidden = YES;
     [navigationVC.navigationBar setBgColor:LT_NavigationBarBgColor];

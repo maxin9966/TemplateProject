@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#define TestNotification @"MXNotificationTest"
-
 @interface TestViewController : BaseViewController
 
 @end

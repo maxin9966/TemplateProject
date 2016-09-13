@@ -22,7 +22,7 @@
 
 #define DO_NO_LIMIT_SELECT          -1
 
-@interface DoImagePickerController : UIViewController
+@interface DoImagePickerController : BaseViewController
 {
     BOOL isAlbumOpen;
 }

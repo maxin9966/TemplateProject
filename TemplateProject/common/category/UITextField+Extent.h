@@ -10,6 +10,9 @@
 
 @interface UITextField (Extent)
 
+- (UIColor*)placeholderColor;
+- (void)setPlaceholderColor:(UIColor*)color;
+
 - (NSRange)selectedRange;
 - (void)setSelectedRange:(NSRange)range;
 

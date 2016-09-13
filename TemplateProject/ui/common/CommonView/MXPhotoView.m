@@ -1,9 +1,9 @@
 //
-//  MXPhotoView.m
-//  FansKit
+//  MXZoomImageView.m
+//  ASP
 //
-//  Created by MA on 14/12/18.
-//  Copyright (c) 2014年 antsmen. All rights reserved.
+//  Created by admin on 16/1/7.
+//  Copyright © 2016年 antsmen. All rights reserved.
 //
 
 #import "MXPhotoView.h"
@@ -12,48 +12,68 @@
 #define ImageMaxScale 4         //最大放大倍数
 #define ImageMinScale 1.7       //最小放大倍数
 
-static MXPhotoView *mxPhotoView = nil;
+static MXPhotoView *singletonZoomImageView = nil;
 
 @interface MXPhotoView ()
-{
-    UIImageView *_imageView;
-    CGRect scaleOriginRect;
-    BOOL isShowing;
-}
-@property (nonatomic,assign) BOOL showStatusBarWhenDismiss;
+<UIScrollViewDelegate>
+
+@property (nonatomic,strong) UIImageView *imageView;
+
+@property (nonatomic,assign) BOOL visible;
 
 @end
 
 @implementation MXPhotoView
-@synthesize image;
-@synthesize showStatusBarWhenDismiss;
+@synthesize image,url;
+
+- (id)init
+{
+    self = [super init];
+    if(self){
+        [self initialize];
+    }
+    return self;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if ((self = [super initWithFrame:frame])) {
-                
-        // 图片
-        _imageView = [[UIImageView alloc] init];
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        [self addSubview:_imageView];
-        
-        // 属性
-        self.clipsToBounds = YES;
-        self.backgroundColor = [UIColor blackColor];
-        self.delegate = self;
-        self.showsHorizontalScrollIndicator = NO;
-        self.showsVerticalScrollIndicator = NO;
-        self.decelerationRate = UIScrollViewDecelerationRateFast;
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        
-        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(singleTap:)];
-        [self addGestureRecognizer:singleTap];
-        UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(doubleTap:)];
-        doubleTap.numberOfTapsRequired = 2;
-        [self addGestureRecognizer:doubleTap];
-        [singleTap requireGestureRecognizerToFail:doubleTap];
+    self = [super initWithFrame:frame];
+    if(self){
+        [self initialize];
     }
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if(self){
+        [self initialize];
+    }
+    return self;
+}
+
+- (void)initialize
+{
+    // 图片
+    _imageView = [[UIImageView alloc] init];
+    _imageView.contentMode = UIViewContentModeScaleAspectFill;
+    [self addSubview:_imageView];
+    
+    // 属性
+    self.clipsToBounds = YES;
+    self.backgroundColor = [UIColor blackColor];
+    self.delegate = self;
+    self.showsHorizontalScrollIndicator = NO;
+    self.showsVerticalScrollIndicator = NO;
+    self.decelerationRate = UIScrollViewDecelerationRateFast;
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(singleTap:)];
+    [self addGestureRecognizer:singleTap];
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(doubleTap:)];
+    doubleTap.numberOfTapsRequired = 2;
+    [self addGestureRecognizer:doubleTap];
+    [singleTap requireGestureRecognizerToFail:doubleTap];
 }
 
 - (UIImage*)image
@@ -64,103 +84,101 @@ static MXPhotoView *mxPhotoView = nil;
 - (void)setImage:(UIImage *)img
 {
     image = img;
+    [self reset];
     _imageView.image = img;
-    [_imageView mx_cancelCurrentImageLoad];
     // 设置缩放比例
     [self adjustFrame];
     //是否允许触摸
     self.userInteractionEnabled = !(img == nil);
 }
 
-- (void)setUrl:(NSURL *)url
+- (void)setUrl:(NSURL *)aUrl
 {
-    _url = url;
-    self.image = nil;
+    url = aUrl;
+    [self reset];
+    __weak typeof(self)wSelf = self;
     [_imageView mx_setImageWithURL:[url absoluteString] placeholderImage:nil completed:^(UIImage *aImage, NSError *error) {
-        self.image = aImage;
+        wSelf.image = aImage;
     }];
 }
 
 #pragma mark - static
-
-+ (void)showWithImage:(UIImage*)img
++ (void)showInWindowWithImage:(UIImage*)img
 {
-    if(mxPhotoView){
-        [mxPhotoView reset];
+    if(!singletonZoomImageView){
+        singletonZoomImageView = [[self alloc] initWithFrame:[UIScreen mainScreen].bounds];
     }
-    if(!mxPhotoView){
-        mxPhotoView = [[MXPhotoView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    if(singletonZoomImageView.visible){
+        [singletonZoomImageView hide];
     }
-    mxPhotoView.image = img;
-    [mxPhotoView show];
+    singletonZoomImageView.image = img;
+    [singletonZoomImageView show];
+}
+
++ (void)showInWindowWithUrl:(NSURL*)aUrl
+{
+    if(!singletonZoomImageView){
+        singletonZoomImageView = [[self alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    }
+    if(singletonZoomImageView.visible){
+        [singletonZoomImageView hide];
+    }
+    singletonZoomImageView.url = aUrl;
+    [singletonZoomImageView show];
 }
 
 + (void)dismiss
 {
-    if(mxPhotoView){
-        [mxPhotoView remove];
+    if(singletonZoomImageView.visible){
+        [singletonZoomImageView hide];
     }
 }
 
 #pragma mark - method
 - (void)show
 {
-    if(isShowing){
+    if(_visible){
         return;
     }
     UIWindow *window = [MyCommon normalLevelWindow];
     self.alpha = 0;
     [window addSubview:self];
-    //self.userInteractionEnabled = NO;
+    __weak typeof(self)wSelf = self;
     [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionTransitionCurlUp animations:^{
-        self.alpha = 1;
+        wSelf.alpha = 1;
     } completion:^(BOOL finished){
-        //self.userInteractionEnabled = YES;
+        
     }];
-    
-    BOOL originStatusBarHidden = [UIApplication sharedApplication].isStatusBarHidden;
-    self.showStatusBarWhenDismiss = !originStatusBarHidden;
-    if(!originStatusBarHidden){
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:YES];
-    }
-    isShowing = YES;
-    NSLog(@"show");
+    _visible = YES;
 }
 
-- (void)remove
+- (void)hide
 {
-    [self removeWithAnimated:YES];
+    [self hideWithAnimated:YES];
 }
 
-- (void)removeWithAnimated:(BOOL)animated
+- (void)hideWithAnimated:(BOOL)animated
 {
-    if(!isShowing){
+    if(!_visible){
         return;
     }
-    //self.userInteractionEnabled = NO;
-    if(showStatusBarWhenDismiss){
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
-    }
-    NSTimeInterval interval = 0;
+    __weak typeof(self)wSelf = self;
     if(animated){
-        interval = 0.2;
-    }
-    [UIView animateWithDuration:interval delay:0 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+            wSelf.alpha = 0;
+        } completion:^(BOOL finished){
+            [wSelf removeFromSuperview];
+        }];
+    }else{
         self.alpha = 0;
-    } completion:^(BOOL finished){
-        //self.userInteractionEnabled = YES;
         [self removeFromSuperview];
-    }];
-    isShowing = NO;
-    NSLog(@"hide");
+    }
+    _visible = NO;
 }
 
 //重置
 - (void)reset
 {
-    if(isShowing){
-        [self removeWithAnimated:NO];
-    }
     [_imageView mx_cancelCurrentImageLoad];
     _imageView.image = nil;
     [self turnOffZoomAnimated:NO];
@@ -184,16 +202,19 @@ static MXPhotoView *mxPhotoView = nil;
         return;
     }
     
+    CGFloat selfWidth = self.frame.size.width;
+    CGFloat selfHeight = self.frame.size.height;
+    
     //缩放值
-    float scaleX = self.frame.size.width/imgSize.width;
-    float scaleY = self.frame.size.height/imgSize.height;
+    float scaleX = selfWidth/imgSize.width;
+    float scaleY = selfHeight/imgSize.height;
     
     self.minimumZoomScale = 1;
     //倍数小的，先到边缘
     if (scaleX > scaleY){
         //Y方向先到边缘
         float imgViewWidth = imgSize.width*scaleY;
-        self.maximumZoomScale = self.frame.size.width/imgViewWidth;
+        self.maximumZoomScale = selfWidth/imgViewWidth;
         
         if(self.maximumZoomScale<ImageMinScale){
             self.maximumZoomScale = ImageMinScale;
@@ -202,10 +223,10 @@ static MXPhotoView *mxPhotoView = nil;
             self.maximumZoomScale = ImageMaxScale;
         }
         //初始位置
-        scaleOriginRect = (CGRect){self.frame.size.width/2-imgViewWidth/2,0,imgViewWidth,self.frame.size.height};
+        CGRect scaleOriginRect = (CGRect){selfWidth/2-imgViewWidth/2,0,imgViewWidth,selfHeight};
         _imageView.frame = scaleOriginRect;
         //初始缩放值
-        if(self.frame.size.width<self.frame.size.height){
+        if(selfWidth<selfHeight && (imgSize.height/imgSize.width)/(selfHeight/selfWidth)>ImageMinScale){
             //针对长图的优化
             self.zoomScale = self.maximumZoomScale;
         }else{
@@ -215,7 +236,7 @@ static MXPhotoView *mxPhotoView = nil;
     }else {
         //X先到边缘
         float imgViewHeight = imgSize.height*scaleX;
-        self.maximumZoomScale = self.frame.size.height/imgViewHeight;
+        self.maximumZoomScale = selfHeight/imgViewHeight;
         
         if(self.maximumZoomScale<ImageMinScale){
             self.maximumZoomScale = ImageMinScale;
@@ -224,7 +245,7 @@ static MXPhotoView *mxPhotoView = nil;
             self.maximumZoomScale = ImageMaxScale;
         }
         //初始位置
-        scaleOriginRect = (CGRect){0,self.frame.size.height/2-imgViewHeight/2,self.frame.size.width,imgViewHeight};
+        CGRect scaleOriginRect = (CGRect){0,selfHeight/2-imgViewHeight/2,selfWidth,imgViewHeight};
         _imageView.frame = scaleOriginRect;
         //初始缩放值
         self.zoomScale = self.minimumZoomScale;
@@ -257,12 +278,13 @@ static MXPhotoView *mxPhotoView = nil;
     _imageView.center = centerPoint;
 }
 
-#pragma mark - 手势处理
+
+#pragma mark - Tap Gesture
 - (void)singleTap:(UITapGestureRecognizer *)tap
 {
-    [self remove];
-    if(_aDelegate && [_aDelegate respondsToSelector:@selector(didTapMXPhotoView:)]){
-        [_aDelegate didTapMXPhotoView:self];
+    [self hide];
+    if(_singleTap){
+        _singleTap();
     }
 }
 

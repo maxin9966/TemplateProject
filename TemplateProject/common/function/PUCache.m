@@ -138,37 +138,37 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     if (image) {
         data = UIImagePNGRepresentation(image);
     }
-    if (data) {
+    if (data.length) {
         //缓存
         [self store:data forKey:key];
     }
 }
 
-- (void)moveImageFile:(NSString *)imagePath forKey:(NSString *)key
+#pragma mark - Store Data
+- (void)copyFile:(NSString *)filePath forKey:(NSString *)key
 {
-    [self moveFile:imagePath forKey:key];
-    UIImage *image = [self imageForKey:key];
-    //内存缓存
-    if(image){
-        @synchronized (self) {
-            [self.memCache setObject:image forKey:key cost:image.size.height * image.size.width * image.scale];
-        }
+    if(!filePath || !key){
+        return;
+    }
+    if (![_fileManager fileExistsAtPath:_diskCachePath]) {
+        [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    if([_fileManager fileExistsAtPath:filePath] && ![self diskExistsWithKey:key]){
+        [_fileManager copyItemAtPath:filePath toPath:[self cachePathForKey:key] error:nil];
     }
 }
 
-#pragma mark - Store Data
 - (void)moveFile:(NSString *)filePath forKey:(NSString *)key
 {
     if(!filePath || !key){
         return;
     }
-    if(![_fileManager fileExistsAtPath:filePath]){
-        return;
-    }
     if (![_fileManager fileExistsAtPath:_diskCachePath]) {
-        [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
+        [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    [_fileManager moveItemAtPath:filePath toPath:[self cachePathForKey:key] error:nil];
+    if([_fileManager fileExistsAtPath:filePath] && ![self diskExistsWithKey:key]){
+        [_fileManager moveItemAtPath:filePath toPath:[self cachePathForKey:key] error:nil];
+    }
 }
 
 - (void)store:(NSData *)data forKey:(NSString *)key
@@ -177,7 +177,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
         return;
     }
     if (![_fileManager fileExistsAtPath:_diskCachePath]) {
-        [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
+        [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     [data writeToFile:[self cachePathForKey:key] options:NSDataWritingAtomic error:nil];
 }
@@ -228,10 +228,12 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     if(!key.length){
         return nil;
     }
-    NSString *defaultPath = [self cachePathForKey:key];
-    NSData *data = [NSData dataWithContentsOfFile:defaultPath];
-    if (data) {
-        return data;
+    if([self diskExistsWithKey:key]){
+        NSString *defaultPath = [self cachePathForKey:key];
+        NSData *data = [_fileManager contentsAtPath:defaultPath];
+        if (data.length) {
+            return data;
+        }
     }
     return nil;
 }
@@ -258,13 +260,13 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
         return nil;
     }
     NSData *data = [self dataFromDiskForKey:key];
-    if (data) {
+    if (data.length) {
         UIImage *image = [UIImage imageWithData:data];
         //解码
         image = [self decodedImageWithImage:image];
+        image = [image deepCopy];
         return image;
-    }
-    else {
+    }else {
         return nil;
     }
 }
@@ -333,7 +335,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     [_fileManager createDirectoryAtPath:self.diskCachePath
             withIntermediateDirectories:YES
                              attributes:nil
-                                  error:NULL];
+                                  error:nil];
 }
 
 //清理过期的
@@ -357,7 +359,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     //  2. Storing file attributes for the size-based cleanup pass.
     NSMutableArray *urlsToDelete = [[NSMutableArray alloc] init];
     for (NSURL *fileURL in fileEnumerator) {
-        NSDictionary *resourceValues = [fileURL resourceValuesForKeys:resourceKeys error:NULL];
+        NSDictionary *resourceValues = [fileURL resourceValuesForKeys:resourceKeys error:nil];
         
         // Skip directories.
         if ([resourceValues[NSURLIsDirectoryKey] boolValue]) {
@@ -461,7 +463,7 @@ static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 20; // 20 days
     
     for (NSURL *fileURL in fileEnumerator) {
         NSNumber *fileSize;
-        [fileURL getResourceValue:&fileSize forKey:NSURLFileSizeKey error:NULL];
+        [fileURL getResourceValue:&fileSize forKey:NSURLFileSizeKey error:nil];
         totalSize += [fileSize unsignedIntegerValue];
         fileCount += 1;
     }

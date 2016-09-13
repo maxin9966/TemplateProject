@@ -100,14 +100,6 @@ static DatePicker *picker = nil;
 //确定按钮
 - (void)userClick:(id)sender
 {
-    //[self dissMiss];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy/MM/dd"];
-    
-    NSString *dateText = [dateFormatter stringFromDate:_datePicker.date];
-    if ([self.delegate respondsToSelector:@selector(chooseDateString:)]) {
-        [self.delegate chooseDateString:dateText];
-    }
     if(delegate && [delegate respondsToSelector:@selector(chooseDate:)]){
         [delegate chooseDate:_datePicker.date];
     }

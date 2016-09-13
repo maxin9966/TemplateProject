@@ -15,12 +15,15 @@
 
 - (id)objectAtIndexSafely:(NSUInteger)index;
 
+//随机获取一个对象
+- (id)randomObject;
+
 @end
 
 @interface NSMutableArray (Utility)
 
 //如果已存在 则不重复添加
-- (BOOL)addObjectNonrepetitive:(id<NSObject>)object;
+- (BOOL)addObjectNoRepeat:(id<NSObject>)object;
 
 //删除所有相同的object
 - (BOOL)deleteObj:(id<NSObject>)object;

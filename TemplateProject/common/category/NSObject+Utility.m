@@ -19,7 +19,10 @@
     NSError* error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self
                                                 options:kNilOptions error:&error];
-    if (error != nil) return nil;
+    if (error != nil){
+        NSLog(@"Json Error:%@",error);
+        return nil;
+    }
     if (jsonData.length>0){
         jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
     }

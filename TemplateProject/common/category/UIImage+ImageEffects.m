@@ -181,20 +181,4 @@
     return outputImage;
 }
 
-//gpu模糊 需要导入GPUImage框架
-//- (UIImage*)gpuBlur
-//{
-//    float imgWidth = self.size.width;
-//    float imgHeight = self.size.height;
-//    GPUImageGaussianBlurFilter *filter = [[GPUImageGaussianBlurFilter alloc] init];
-//    float radius = 25 * sqrt((imgWidth*imgHeight)/(1000*1000));
-//    if(radius<6.5){
-//        radius = 6.5;
-//    }
-//    filter.blurRadiusInPixels = radius;
-//    UIImage *blur = [filter imageByFilteringImage:self];
-//    return blur;
-//}
-
-
 @end

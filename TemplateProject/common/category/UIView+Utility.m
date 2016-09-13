@@ -54,8 +54,8 @@ static char MXLineArray;
         UIButton *btn = (UIButton*)self;
         btn.titleLabel.font = [UIFont fontWithName:btn.titleLabel.font.fontName size:btn.titleLabel.font.pointSize*deltaRatio];
     }
-    self.layer.borderWidth *= ratio;
-    self.layer.cornerRadius *= ratio;
+//    self.layer.borderWidth *= ratio;
+//    self.layer.cornerRadius *= ratio;
     objc_setAssociatedObject(self, &zoomRatio, @(ratio), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 

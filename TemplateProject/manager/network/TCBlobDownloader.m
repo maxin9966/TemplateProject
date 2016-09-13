@@ -13,6 +13,7 @@ NSString * const TCBlobDownloadErrorDomain = @"com.thibaultcha.tcblobdownload";
 NSString * const TCBlobDownloadErrorHTTPStatusKey = @"TCBlobDownloadErrorHTTPStatusKey";
 
 #import "TCBlobDownloader.h"
+#import <CommonCrypto/CommonDigest.h>
 
 @interface TCBlobDownloader ()
 
@@ -109,7 +110,6 @@ NSString * const TCBlobDownloadErrorHTTPStatusKey = @"TCBlobDownloadErrorHTTPSta
     if (self.isFinished) {
         return;
     }
-    
     // If we can't handle the request, better cancelling the operation right now
     if (![NSURLConnection canHandleRequest:self.fileRequest]) {
         NSError *error = [NSError errorWithDomain:TCBlobDownloadErrorDomain
@@ -397,11 +397,21 @@ NSString * const TCBlobDownloadErrorHTTPStatusKey = @"TCBlobDownloadErrorHTTPSta
 
 
 #pragma mark - Custom Getters
-
+//- (NSString *)fileName
+//{
+////    return _fileName ? _fileName : [[NSURL URLWithString:[self.downloadURL absoluteString]] lastPathComponent];
+//    return _fileName ? _fileName : [self md5:[self.downloadURL absoluteString]];
+//    
+//}
 
 - (NSString *)fileName
 {
-    return _fileName ? _fileName : [[NSURL URLWithString:[self.downloadURL absoluteString]] lastPathComponent];
+//    return _fileName ? _fileName : [[NSURL URLWithString:[self.downloadURL absoluteString]] lastPathComponent];
+    if(!_fileName){
+        _fileName = [MyCommon createUUID];
+    }
+    return _fileName;
+
 }
 
 - (NSString *)pathToFile
@@ -417,6 +427,20 @@ NSString * const TCBlobDownloadErrorHTTPStatusKey = @"TCBlobDownloadErrorHTTPSta
 - (float)progress
 {
     return (_expectedDataLength == 0) ? 0 : (float) self.receivedDataLength / (float) self.expectedDataLength;
+}
+
+#pragma mark - md5
+//md5
+- (NSString *)md5:(NSString *)key {
+    const char *str = [key UTF8String];
+    if (str == NULL) {
+        str = "";
+    }
+    unsigned char r[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(str, (CC_LONG)strlen(str), r);
+    NSString *filename = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+                          r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]];
+    return filename;
 }
 
 @end

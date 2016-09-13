@@ -60,6 +60,23 @@
     return [CLLocationManager authorizationStatus]>kCLAuthorizationStatusDenied;
 }
 
+//如果用户不允许定位 则提示用户
++ (void)remindIfNeed:(NSString*)tips
+{
+    if(!tips.length){
+        tips = @"请在iPhone的“设置-隐私-定位服务”选项中，允许我们使用定位服务。";
+    }
+    if(![UserLocation locationServicesEnabled]){
+        BlockAlertView *alert = [[BlockAlertView alloc] initWithTitle:nil message:tips actionBlock:^(NSInteger buttonIndex) {
+            if(buttonIndex==1){
+                [[UIApplication sharedApplication] openURL:
+                 [NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            }
+        } cancelButtonTitle:@"下次再说" otherButtonTitles:@"立即开启", nil];
+        [alert show];
+    }
+}
+
 //开始定位
 - (void)startUpdate
 {

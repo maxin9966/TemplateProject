@@ -32,11 +32,20 @@
     return [self objectAtIndex:index];
 }
 
+//随机获取一个对象
+- (id)randomObject
+{
+    if(!self.count){
+        return nil;
+    }
+    return [self objectAtIndexSafely:arc4random()%self.count];
+}
+
 @end
 
 @implementation NSMutableArray (Utility)
 
-- (BOOL)addObjectNonrepetitive:(id<NSObject>)object
+- (BOOL)addObjectNoRepeat:(id<NSObject>)object
 {
     if(!object){
         return NO;

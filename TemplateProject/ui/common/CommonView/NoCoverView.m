@@ -10,7 +10,7 @@
 
 @interface NoCoverView()
 {
-    UIView *focusInput;
+    UIView *focusView;
     BOOL isKeyboardShow;
     CGFloat superOriginY;
 }
@@ -18,6 +18,7 @@
 @end
 
 @implementation NoCoverView
+@synthesize targetView;
 
 - (void)didMoveToWindow
 {
@@ -42,8 +43,13 @@
 #pragma mark - notification
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    focusInput = [self firstResponderInView:self];
-    if(!focusInput){
+    if(targetView){
+        focusView = targetView;
+    }
+    if(!focusView){
+        focusView = [self firstResponderInView:self];
+    }
+    if(!focusView){
         return;
     }
     NSDictionary *info = [notification userInfo];
@@ -57,7 +63,7 @@
     CGFloat kbHeight = keyboardSize.height;
     
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    CGRect rect = [focusInput.superview convertRect:focusInput.frame toView:window];
+    CGRect rect = [focusView.superview convertRect:focusView.frame toView:window];
     
     if(!isKeyboardShow){
         superOriginY = self.frame.origin.y;
@@ -71,10 +77,10 @@
 
 - (void)keyboardWillHide:(NSNotification *)notification
 {
-    if(isKeyboardShow && focusInput){
+    if(isKeyboardShow && focusView){
         self.frame = CGRectMake(self.frame.origin.x, superOriginY, self.frame.size.width, self.frame.size.height);
         isKeyboardShow = NO;
-        focusInput = nil;
+        focusView = nil;
     }
 }
 

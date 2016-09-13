@@ -18,6 +18,9 @@
 //是否允许定位
 + (BOOL)locationServicesEnabled;
 
+//如果用户不允许定位 则提示用户
++ (void)remindIfNeed:(NSString*)tips;
+
 //更新坐标
 - (void)startUpdate;
 

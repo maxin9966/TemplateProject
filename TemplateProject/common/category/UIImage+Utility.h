@@ -12,13 +12,15 @@
 + (UIImage*)fastImageWithData:(NSData*)data;
 + (UIImage*)fastImageWithContentsOfFile:(NSString*)path;
 
+//深拷贝（解码）
 - (UIImage*)deepCopy;
 
 //重绘
-- (UIImage*)resize:(CGSize)size;
 - (UIImage*)aspectFit:(CGSize)size;
 - (UIImage*)aspectFill:(CGSize)size;
 - (UIImage*)aspectFill:(CGSize)size offset:(CGFloat)offset;
+//调整大小
+- (UIImage*)resize:(CGSize)size;
 //图片等比缩放
 - (UIImage*)scaledToWidth:(float)i_width;
 
@@ -31,17 +33,14 @@
 
 - (UIImage*)maskedImage:(UIImage*)maskImage;
 
+//图像处理
+//模糊
 - (UIImage*)gaussBlur:(CGFloat)blurLevel;       //  {blurLevel | 0 ≤ t ≤ 1}
-
 - (UIImage*)blurredImage:(CGFloat)blurAmount tintColor:(UIColor*)tintColor;//  {blurLevel | 0 ≤ t ≤ 1}
-
-//修正方向
-- (UIImage *)fixOrientation;
-
 //圆形图片
 - (UIImage *)createRoundedWithRadius:(CGFloat)radius;
 
-//调整图片大小
-- (UIImage *)resizedImageWithSize:(CGSize)size;
+//修正方向
+- (UIImage *)fixOrientation;
 
 @end

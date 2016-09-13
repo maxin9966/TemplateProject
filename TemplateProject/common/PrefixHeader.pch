@@ -52,14 +52,18 @@
 #define LT_Color_TextTitle RGBA(35, 24, 21, 1)
 #define LT_Color_TextContent RGBA(89, 87, 87, 1)
 
-#define LT_NavigationBarBgColor RGBA(255, 255, 255, 1)
-#define LT_NavigationBarTitleColor LT_Color_LightGray
-
 //字体
 #define LT_Bold_FontName @"Helvetica-Bold"
 #define LT_Light_FontName @"Helvetica"
 
-#define LT_NavigationBarTitleFont [UIFont boldSystemFontOfSize:16]
+//导航条
+#define LT_NavigationBarBgColor RGBA(255, 255, 255, 1)
+#define LT_NavigationBarTitleColor RGBA(20, 20, 20, 1)
+#define LT_NavigationBarLeftTitleColor LT_Color_Main
+#define LT_NavigationBarRightTitleColor LT_NavigationBarLeftTitleColor
+#define LT_NavigationBarBottomLineColor RGBA(220, 220, 220, 1)
+
+#define LT_NavigationBarTitleFont [UIFont boldSystemFontOfSize:17]
 #define LT_NavigationBarButtonTitleFont [UIFont boldSystemFontOfSize:16]
 
 //头像照片最大尺寸
@@ -112,3 +116,6 @@ typedef void(^BooleanBlock)(BOOL success,NSError* error);
 typedef void(^ArrayBlock)(NSArray* array,NSError* error);
 typedef void(^DictionaryBlock)(NSDictionary* dict,NSError* error);
 typedef void(^ObjectBlock)(id object,NSError* error);
+typedef void(^CommonBlock)();
+typedef void(^SuccessBlock)();
+typedef void(^FailureBlock)();

@@ -9,14 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @class ViewController;
-@class MainViewController;
 @class MXNavigationController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (nonatomic,strong) MainViewController *viewController;
+@property (nonatomic,strong) ViewController *viewController;
 
 @property (nonatomic,strong) MXNavigationController *navigationVC;
 

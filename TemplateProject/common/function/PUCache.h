@@ -47,7 +47,7 @@ typedef void(^PUCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalSize);
 //store
 - (void)moveFile:(NSString *)filePath forKey:(NSString *)key;
 
-- (void)moveImageFile:(NSString *)imagePath forKey:(NSString *)key;
+- (void)copyFile:(NSString *)filePath forKey:(NSString *)key;
 
 - (void)store:(NSData *)data forKey:(NSString *)key;
 

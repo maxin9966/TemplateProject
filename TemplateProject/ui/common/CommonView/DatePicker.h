@@ -9,15 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @interface DatePicker : NSObject{
-    UIDatePicker     *_datePicker;
-    UIView           *_maskView;   
+    UIView           *_maskView;
 }
 
 + (DatePicker *)sharedInstance;
 
-//datePicker显示
 - (void)show;
-//datePicker隐藏
+
 - (void)dissMiss;
 
 @property (nonatomic,assign) id delegate;
@@ -25,11 +23,12 @@
 @property (nonatomic,assign) NSDate *minimumDate;
 @property (nonatomic,strong) NSDate *date;
 
+@property (nonatomic,strong) UIDatePicker *datePicker;
+
 @end
 
 @protocol DatePickerDelegate <NSObject>
 @optional
-- (void)chooseDateString:(NSString *)dateText;
 - (void)chooseDate:(NSDate *)date;
 
 @end

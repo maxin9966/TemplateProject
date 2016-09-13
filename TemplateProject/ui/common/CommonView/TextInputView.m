@@ -12,7 +12,6 @@
 <UIGestureRecognizerDelegate,UITextFieldDelegate>
 {
     IBOutlet UILabel *titleLabel;
-    IBOutlet UITextField *textField;
     
     UIView *bgView;
     
@@ -23,7 +22,7 @@
 @end
 
 @implementation TextInputView
-@synthesize delegate;
+@synthesize delegate,textField;
 @synthesize title,placeholder,limmitNumber,text;
 
 - (id)init
@@ -118,7 +117,7 @@
                                                      name:UIKeyboardWillHideNotification
                                                    object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidChanged) name:UITextFieldTextDidChangeNotification object:textField];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidChanged:) name:UITextFieldTextDidChangeNotification object:textField];
     }
 }
 
@@ -160,18 +159,23 @@
     return NO;
 }
 
-- (void)textFieldDidChanged
+- (void)textFieldDidChanged:(NSNotification*)notification
 {
+    if([notification object] != textField){
+        return;
+    }
     if(limmitNumber<=0){
         return;
     }
     NSString *toBeString = textField.text;
     NSString *lang = [[UITextInputMode currentInputMode] primaryLanguage]; // 键盘输入模式
+    //en-US 英文
+    //zh-Hans 中文简体
     if ([lang isEqualToString:@"zh-Hans"]) { // 简体中文输入，包括简体拼音，健体五笔，简体手写
         UITextRange *selectedRange = [textField markedTextRange];
         //获取高亮部分
         UITextPosition *position = [textField positionFromPosition:selectedRange.start offset:0];
-        if (position) {
+        if (!position) {
             if (toBeString.length > limmitNumber) {
                 self.text = [toBeString substringToIndex:limmitNumber];
             }

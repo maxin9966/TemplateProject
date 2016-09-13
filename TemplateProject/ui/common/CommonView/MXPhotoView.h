@@ -14,29 +14,18 @@
  
  */
 
-@class MXPhotoView;
-
-@protocol MXPhotoViewDelegate <NSObject>
-
-- (void)didTapMXPhotoView:(MXPhotoView*)photoView;
-
-@end
-
-@interface MXPhotoView : UIScrollView <UIScrollViewDelegate>
-
-@property (nonatomic,weak) id<MXPhotoViewDelegate>aDelegate;
+@interface MXPhotoView : UIScrollView
 
 @property (nonatomic,strong) UIImage *image;
 
 @property (nonatomic,strong) NSURL *url;
 
-+ (void)showWithImage:(UIImage*)img;
+@property (nonatomic,strong) CommonBlock singleTap;
 
-+ (void)dismiss;
++ (void)showInWindowWithImage:(UIImage*)img;
 
-- (void)reset;
++ (void)showInWindowWithUrl:(NSURL*)aUrl;
 
-//恢复初始到缩放值
 - (void)turnOffZoomAnimated:(BOOL)yesOrNo;
 
 @end

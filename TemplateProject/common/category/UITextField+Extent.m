@@ -35,5 +35,14 @@
     [self setSelectedTextRange:selectionRange];
 }
 
+- (void)setPlaceholderColor:(UIColor*)color
+{
+    [self setValue:color forKeyPath:@"_placeholderLabel.textColor"];
+}
+
+- (UIColor*)placeholderColor
+{
+    return [self valueForKeyPath:@"_placeholderLabel.textColor"];
+}
 
 @end

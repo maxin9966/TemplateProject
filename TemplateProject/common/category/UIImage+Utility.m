@@ -38,7 +38,7 @@
 }
 
 #pragma mark- Copy
-
+//深拷贝（可用作图片解码）
 - (UIImage*)deepCopy
 {
     return [UIImage decode:self];
@@ -501,48 +501,48 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     return image;
 }
 
-- (UIImage *)resizedImageWithSize:(CGSize)size
-{
-    size.width	= (int)size.width;//取整
-    size.height	= (int)size.height;//取整
-    
-    CGFloat scale = self.scale;
-    
-    CGSize sizeInPixels;
-    sizeInPixels.width = size.width*scale;
-    sizeInPixels.height = size.height*scale;
-    
-    UIImageOrientation orientation = self.imageOrientation;
-    if(orientation==UIImageOrientationLeft ||
-       orientation==UIImageOrientationLeftMirrored ||
-       orientation==UIImageOrientationRight ||
-       orientation==UIImageOrientationRightMirrored)
-    {
-        CGFloat f = sizeInPixels.width;
-        sizeInPixels.width = sizeInPixels.height;
-        sizeInPixels.height = f;
-    }
-    
-    int bytesPerRow	= 4*sizeInPixels.width;
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(NULL,
-                                                 sizeInPixels.width,
-                                                 sizeInPixels.height,
-                                                 8,
-                                                 bytesPerRow,
-                                                 colorSpace,
-                                                 (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
-    
-    CGColorSpaceRelease(colorSpace);
-    CGImageRef imageRef = self.CGImage;
-    CGContextDrawImage(context, CGRectMake(0, 0, sizeInPixels.width, sizeInPixels.height), imageRef);
-    
-    CGImageRef imgRef = CGBitmapContextCreateImage(context);
-    CGContextRelease(context);
-    UIImage *img = [[UIImage alloc] initWithCGImage:imgRef scale:scale orientation:self.imageOrientation];
-    CGImageRelease(imgRef);
-    
-    return img;
-}
+//- (UIImage *)resizedImageWithSize:(CGSize)size
+//{
+//    size.width	= (int)size.width;//取整
+//    size.height	= (int)size.height;//取整
+//    
+//    CGFloat scale = self.scale;
+//    
+//    CGSize sizeInPixels;
+//    sizeInPixels.width = size.width*scale;
+//    sizeInPixels.height = size.height*scale;
+//    
+//    UIImageOrientation orientation = self.imageOrientation;
+//    if(orientation==UIImageOrientationLeft ||
+//       orientation==UIImageOrientationLeftMirrored ||
+//       orientation==UIImageOrientationRight ||
+//       orientation==UIImageOrientationRightMirrored)
+//    {
+//        CGFloat f = sizeInPixels.width;
+//        sizeInPixels.width = sizeInPixels.height;
+//        sizeInPixels.height = f;
+//    }
+//    
+//    int bytesPerRow	= 4*sizeInPixels.width;
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    CGContextRef context = CGBitmapContextCreate(NULL,
+//                                                 sizeInPixels.width,
+//                                                 sizeInPixels.height,
+//                                                 8,
+//                                                 bytesPerRow,
+//                                                 colorSpace,
+//                                                 (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+//    
+//    CGColorSpaceRelease(colorSpace);
+//    CGImageRef imageRef = self.CGImage;
+//    CGContextDrawImage(context, CGRectMake(0, 0, sizeInPixels.width, sizeInPixels.height), imageRef);
+//    
+//    CGImageRef imgRef = CGBitmapContextCreateImage(context);
+//    CGContextRelease(context);
+//    UIImage *img = [[UIImage alloc] initWithCGImage:imgRef scale:scale orientation:self.imageOrientation];
+//    CGImageRelease(imgRef);
+//    
+//    return img;
+//}
 
 @end

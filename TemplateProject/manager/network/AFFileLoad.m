@@ -27,6 +27,12 @@
     return [self uploadData:imageData fileName:@"image.jpg" mimeType:@"image/png" completion:completion];
 }
 
++ (NSURLSessionUploadTask*)uploadFilePath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString*)mimeType completion:(void (^)(NSString* urlString, NSError* error))completion
+{
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+    return [self uploadData:data fileName:fileName mimeType:mimeType completion:completion];
+}
+
 + (NSURLSessionUploadTask*)uploadFilePath:(NSString*)filePath fileName:(NSString*)fileName completion:(void (^)(NSString* urlString, NSError* error))completion
 {
     NSData *data = [NSData dataWithContentsOfFile:filePath];

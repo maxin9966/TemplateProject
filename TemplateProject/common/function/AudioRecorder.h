@@ -29,6 +29,9 @@
 @property (nonatomic,weak) id<AudioRecorderDelegate> delegate;
 @property (nonatomic,assign) float maxDuration;//默认60秒
 
+//请求允许录音
++ (void)askForRecord;
+
 //开始录音
 - (void)startRecord;
 

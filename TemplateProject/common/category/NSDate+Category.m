@@ -18,6 +18,13 @@
 
 @implementation NSDate (Category)
 
+- (NSString *)dateFormat:(NSString*)format
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:format];
+    return [dateFormatter stringFromDate:self];
+}
+
 /*距离当前的时间间隔描述*/
 - (NSString *)timeIntervalDescription
 {

@@ -11,7 +11,7 @@
 @class SimpleSelectView;
 
 @protocol SimpleSelectViewDelegate <NSObject>
-
+@optional
 - (void)simpleSelectView:(SimpleSelectView*)selectView didCommitWithText:(NSString*)text index:(NSInteger)index;
 
 - (void)simpleSelectViewDidCancel:(SimpleSelectView*)selectView;

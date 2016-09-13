@@ -81,12 +81,23 @@
 }
 
 //文件管理器
-+ (PUFileManager*)fileManger
++ (PUFileManager*)fileManager
 {
     static PUFileManager *puFileManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         puFileManager = [[PUFileManager alloc] initWithNamespace:@"MXFileCache"];
+    });
+    return puFileManager;
+}
+
+//视频管理器
++ (PUFileManager*)videoManager
+{
+    static PUFileManager *puFileManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        puFileManager = [[PUFileManager alloc] initWithNamespace:@"MXVideoCache"];
     });
     return puFileManager;
 }
@@ -111,6 +122,29 @@
         puImageManager = [[PUImageManager alloc] initWithNamespace:@"MXImageCache"];
     });
     return puImageManager;
+}
+
+//获取缓存大小
++ (NSUInteger)getDiskCacheSize
+{
+    PUFileManager *fileManger = [MyCommon fileManager];
+    PUFileManager *audioManager = [MyCommon audioManager];
+    PUImageManager *imageManager = [MyCommon imageManager];
+    PUFileManager *videoManager = [MyCommon videoManager];
+    return [fileManger.cacheManager getSize]+[audioManager.cacheManager getSize]+[imageManager.cacheManager getSize]+[videoManager.cacheManager getSize];
+}
+
+//清除硬盘缓存
++ (void)clearDiskCache
+{
+    PUFileManager *fileManger = [MyCommon fileManager];
+    PUFileManager *audioManager = [MyCommon audioManager];
+    PUImageManager *imageManager = [MyCommon imageManager];
+    PUFileManager *videoManager = [MyCommon videoManager];
+    [fileManger.cacheManager clearDisk];
+    [audioManager.cacheManager clearDisk];
+    [imageManager.cacheManager clearDisk];
+    [videoManager.cacheManager clearDisk];
 }
 
 //save userDefault
@@ -143,13 +177,14 @@
 //电话正则
 + (BOOL)isMobile:(NSString *)mobileNumber
 {
-    NSString * MOBILE = @"^1(3[0-9]|5[0-9]|8[0-9])\\d{8}$";
-    NSPredicate *mobileTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", MOBILE];
-    BOOL isPhone = [mobileTest evaluateWithObject:mobileNumber];
-    if (isPhone) {
-        return YES;
-    }
-    return NO;
+    return [mobileNumber length] == 11;
+    //    NSString * MOBILE = @"^1(3[0-9]|5[0-9]|8[0-9])\\d{8}$";
+    //    NSPredicate *mobileTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", MOBILE];
+    //    BOOL isPhone = [mobileTest evaluateWithObject:mobileNumber];
+    //    if (isPhone) {
+    //        return YES;
+    //    }
+    //    return NO;
 }
 
 //邮箱匹配
@@ -604,6 +639,15 @@
     return params;
 }
 
+//获取失败error
++ (NSError *)getErrorWithFailureReason:(NSString*)reason
+{
+    NSInteger errorCode = -99999;
+    NSString *domain = [[self class] description];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:reason forKey:NSLocalizedFailureReasonErrorKey];
+    return [NSError errorWithDomain:domain code:errorCode userInfo:userInfo];
+}
+
 //获取错误信息
 + (NSError*)getErrorWithResponse:(NSDictionary*)dict
 {
@@ -668,7 +712,8 @@
 //根据date获取时间戳
 + (NSTimeInterval)timeIntervalWithDate:(NSDate*)date
 {
-    return [date timeIntervalSince1970]/TimeFactor;
+    NSTimeInterval interval = [date timeIntervalSince1970];
+    return (interval/TimeFactor);
 }
 
 + (AppDelegate*)appDelegate
@@ -677,7 +722,7 @@
 }
 
 //屏幕截图
-- (UIImage*)getScreenImageAfterScreenUpdates:(BOOL)afterScreenUpdates
++ (UIImage*)getScreenImageAfterScreenUpdates:(BOOL)afterScreenUpdates
 {
     UIView * view = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:afterScreenUpdates];
     UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
@@ -687,6 +732,51 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
+}
+
++ (NSString *)notRounding:(float)price afterPoint:(NSInteger)position
+{
+    NSDecimalNumberHandler* roundingBehavior = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundPlain scale:position raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
+    NSDecimalNumber *ouncesDecimal;
+    NSDecimalNumber *roundedOunces;
+    
+    ouncesDecimal = [[NSDecimalNumber alloc] initWithFloat:price];
+    roundedOunces = [ouncesDecimal decimalNumberByRoundingAccordingToBehavior:roundingBehavior];
+    return [NSString stringWithFormat:@"%@",roundedOunces];
+}
+
+//获取文件字符串数据
++ (NSString*)stringWithFileName:(NSString*)fileName ofType:(NSString*)fileType encoding:(NSStringEncoding)encoding
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:fileName ofType:fileType];
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    NSString *str = [[NSString alloc] initWithData:data encoding:encoding];
+    return str;
+}
+
+//scrollView截图
++ (UIImage *)captureScrollView:(UIScrollView *)scrollView
+{
+    UIImage* image = nil;
+    UIGraphicsBeginImageContextWithOptions(scrollView.contentSize, YES, SCREEN_SCALE);
+    {
+        CGPoint savedContentOffset = scrollView.contentOffset;
+        CGRect savedFrame = scrollView.frame;
+        scrollView.contentOffset = CGPointZero;
+        scrollView.frame = CGRectMake(0, 0, scrollView.contentSize.width, scrollView.contentSize.height);
+        
+        [scrollView.layer renderInContext: UIGraphicsGetCurrentContext()];
+        image = UIGraphicsGetImageFromCurrentImageContext();
+        
+        scrollView.contentOffset = savedContentOffset;
+        scrollView.frame = savedFrame;
+    }
+    UIGraphicsEndImageContext();
+    
+    if (image != nil) {
+        return image;
+    }
+    return nil;
 }
 
 @end

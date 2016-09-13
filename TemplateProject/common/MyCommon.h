@@ -31,11 +31,17 @@
 #import "NoCoverView.h"
 #import "SVPullToRefresh.h"
 #import "AppDelegate.h"
-#import "MXNotificationCenter.h"
 #import "NSTimer+Block.h"
 #import "UIResponder+Router.h"
 #import "NSURL+Utility.h"
 #import "UIViewController+DismissKeyboard.h"
+#import "UIImage+GPUImage.h"
+#import "IDNNotificationCenter.h"
+#import "IDNTask.h"
+#import "NSObject+IDNCustomObject.h"
+#import "UIView+NotificationTips.h"
+
+@class Artist;
 
 /**
  
@@ -98,20 +104,18 @@
 + (NSArray *)customBarButtonItemWithTarget:(id)target withSelector:(SEL)selector withBtnImage:(NSString *)image withBtnHighlightImage:(NSString *)highlightImage;
 + (UIBarButtonItem *)barButtonItemWithTitle:(NSString*)title target:(id)target withSelector:(SEL)selector;
 
+//获取磁盘缓存总大小
++ (NSUInteger)getDiskCacheSize;
+//清除磁盘缓存
++ (void)clearDiskCache;
 //文件管理器
-+ (PUFileManager*)fileManger;
-
++ (PUFileManager*)fileManager;
+//视频管理器
++ (PUFileManager*)videoManager;
 //音频管理器
 + (PUFileManager*)audioManager;
-
 //图片管理器
 + (PUImageManager*)imageManager;
-
-//获取缓存大小
-+ (NSUInteger)getDiskCacheSize;
-
-//清除硬盘缓存
-+ (void)clearDiskCache;
 
 //内存占用 字节
 + (int)availableMemory;
@@ -219,5 +223,8 @@
 + (AppDelegate*)appDelegate;
 
 + (NSString *)notRounding:(float)price afterPoint:(NSInteger)position;
+
+//scrollView截图
++ (UIImage *)captureScrollView:(UIScrollView *)scrollView;
 
 @end

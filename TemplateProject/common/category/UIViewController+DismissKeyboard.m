@@ -111,7 +111,7 @@
                                                focusInput = nil;
                                            }
                                        }];
-    [DefaultNotificationCenter addObserverForName:NotiNavigationPopGestureWillBegin
+    [DefaultNotificationCenter addObserverForName:NotificationNavigationPopGestureWillBegin
                                            object:nil
                                             queue:mainQuene
                                        usingBlock:^(NSNotification *note){

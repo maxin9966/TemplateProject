@@ -12,7 +12,7 @@
     视频播放器
  */
 
-#define ControlsOffsetY -28
+#define ControlsOffsetY -25.f
 
 typedef NS_ENUM(NSUInteger, VideoPlayerMode) {
     VideoPlayerModeDefault = 0,

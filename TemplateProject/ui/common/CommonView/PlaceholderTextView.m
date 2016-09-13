@@ -10,8 +10,6 @@
 
 @interface PlaceholderTextView()
 {
-    BOOL isKeyboardShow;
-    CGFloat superOriginY;
     UITextView *placeholderTextView;
 }
 
@@ -19,8 +17,15 @@
 
 @implementation PlaceholderTextView
 
-#pragma mark -
 #pragma mark Life Cycle method
+
+- (id)init
+{
+    if(self = [super init]){
+        [self initialize];
+    }
+    return self;
+}
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -46,7 +51,6 @@
 
 - (void)initialize
 {
-    self.autoUplift = YES;
     self.placeholderColor = [UIColor lightGrayColor];
     placeholderTextView = [[UITextView alloc] init];
     placeholderTextView.backgroundColor = [UIColor clearColor];
@@ -67,18 +71,38 @@
     }else{
         [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
-    self.autoUplift = self.autoUplift;
 }
 
-#pragma mark -
 #pragma mark Notifications
 
-- (void)textDidChange:(NSNotification *)notification
+- (void)textDidChange:(NSNotification*)notification
 {
+    if([notification object] != self){
+        return;
+    }
     placeholderTextView.hidden = self.text.length;
-    if(_limmitNumber>0){
-        if(self.text.length>_limmitNumber){
-            self.text = [self.text substringToIndex:_limmitNumber];
+    if(_textLimit<=0){
+        return;
+    }
+    NSString *toBeString = self.text;
+    NSString *lang = [[UITextInputMode currentInputMode] primaryLanguage]; // 键盘输入模式
+    //en-US 英文
+    //zh-Hans 简体中文输入，包括简体拼音，健体五笔，简体手写
+    //判断中文检测是否为zh或-zh开头
+    if (![lang isEqualToString:@"en-US"]) {
+        UITextRange *selectedRange = [self markedTextRange];
+        //获取高亮部分
+        UITextPosition *position = [self positionFromPosition:selectedRange.start offset:0];
+        if (!position) {
+            if (toBeString.length > _textLimit) {
+                self.text = [toBeString substringToIndex:_textLimit];
+            }
+        }else{
+            // 没有高亮选择的字，则对已输入的文字进行字数统计和限制
+        }
+    }else{
+        if (toBeString.length > _textLimit) {
+            self.text = [toBeString substringToIndex:_textLimit];
         }
     }
 }
@@ -89,6 +113,18 @@
 {
     [super setText:aText];
     placeholderTextView.hidden = self.text.length;
+}
+
+- (void)setFont:(UIFont *)font
+{
+    [super setFont:font];
+    placeholderTextView.font = font;
+}
+
+- (void)setTextAlignment:(NSTextAlignment)textAlignment
+{
+    [super setTextAlignment:textAlignment];
+    placeholderTextView.textAlignment = textAlignment;
 }
 
 - (void)setPlaceholder:(NSString *)placeholder
@@ -103,64 +139,16 @@
     placeholderTextView.textColor = color;
 }
 
-- (void)setAutoUplift:(BOOL)b
+- (void)setContentInset:(UIEdgeInsets)contentInset
 {
-    _autoUplift = b;
-    if(b && self.window){
-        //键盘事件
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(keyboardWillShow:)
-                                                     name:UIKeyboardWillShowNotification
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(keyboardWillHide:)
-                                                     name:UIKeyboardWillHideNotification
-                                                   object:nil];
-    }else{
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:placeholderTextView];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:placeholderTextView];
-    }
+    [super setContentInset:contentInset];
+    placeholderTextView.contentInset = contentInset;
 }
 
-#pragma mark - Keyboard
-- (void)keyboardWillShow:(NSNotification *)notification
+- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset
 {
-    if(!self.isFirstResponder){
-        return;
-    }
-    NSDictionary *info = [notification userInfo];
-    //当前键盘尺寸
-    NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
-    CGSize keyboardSize = [value CGRectValue].size;
-    //部分第三方输入法适配
-    if(!keyboardSize.height){
-        return;
-    }
-    CGFloat kbHeight = keyboardSize.height;
-    
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    CGRect rect = [self.superview convertRect:self.frame toView:window];
-    
-    if(!isKeyboardShow){
-        superOriginY = self.UpliftView.frame.origin.y;
-    }
-    CGFloat offsetY = (rect.origin.y+rect.size.height)-(window.frame.size.height-kbHeight);
-    if(offsetY>0){
-        self.UpliftView.frame = CGRectMake(self.UpliftView.frame.origin.x, self.UpliftView.frame.origin.y-offsetY-8, self.UpliftView.frame.size.width, self.UpliftView.frame.size.height);
-    }
-    isKeyboardShow = YES;
-}
-
-- (void)keyboardWillHide:(NSNotification *)notification
-{
-    if(!self.isFirstResponder){
-        return;
-    }
-    if(isKeyboardShow){
-        self.UpliftView.frame = CGRectMake(self.UpliftView.frame.origin.x, superOriginY, self.UpliftView.frame.size.width, self.UpliftView.frame.size.height);
-        isKeyboardShow = NO;
-    }
+    [super setTextContainerInset:textContainerInset];
+    placeholderTextView.textContainerInset = textContainerInset;
 }
 
 @end

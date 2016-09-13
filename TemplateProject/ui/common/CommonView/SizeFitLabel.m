@@ -12,11 +12,6 @@
 @synthesize alignment;
 @synthesize widthLimit;
 
-- (void)setAdjustsFontSizeToFitWidth:(BOOL)width
-{
-    [super setAdjustsFontSizeToFitWidth:width];
-}
-
 - (void)sizeToFit
 {
     CGFloat selfHeight = self.frame.size.height;
@@ -32,22 +27,23 @@
     switch (alignment) {
         case SizeFitLabelAlignmentLeft:
         {
-            self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, selfWidth, selfHeight);
+            self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, selfWidth+0.5, selfHeight);
         }
             break;
         case SizeFitLabelAlignmentCenter:
         {
-            self.frame = CGRectMake(center.x-selfWidth/2, self.frame.origin.y, selfWidth, selfHeight);
+            self.frame = CGRectMake(center.x-selfWidth/2-0.5, self.frame.origin.y, selfWidth+1, selfHeight);
         }
             break;
         case SizeFitLabelAlignmentRight:
         {
-            self.frame = CGRectMake(rightX-selfWidth, self.frame.origin.y, selfWidth, selfHeight);
+            self.frame = CGRectMake(rightX-selfWidth-0.5, self.frame.origin.y, selfWidth+0.5, selfHeight);
         }
             break;
         default:
             break;
     }
+    [self setFrameWidth:self.frameWidth+1.f];
 }
 
 - (void)setText:(NSString *)text

@@ -26,6 +26,8 @@ typedef void(^DownloadCompletionBlock)(NSString *filePath,NSError *error);
 //上传文件
 + (NSURLSessionUploadTask*)uploadFilePath:(NSString*)filePath fileName:(NSString*)fileName completion:(void (^)(NSString* urlString, NSError* error))completion;
 
++ (NSURLSessionUploadTask*)uploadFilePath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString*)mimeType completion:(void (^)(NSString* urlString, NSError* error))completion;
+
 //下载
 + (NSURLSessionDownloadTask*)downloadFileWithURL:(NSURL*)url progress:(DownloadProgressBlock)progressBlock completion:(DownloadCompletionBlock)completionHandler;
 

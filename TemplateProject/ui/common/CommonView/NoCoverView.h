@@ -10,4 +10,6 @@
 
 @interface NoCoverView : UIControl
 
+@property (nonatomic,weak) UIView *targetView;
+
 @end

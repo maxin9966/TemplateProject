@@ -64,6 +64,31 @@
     return self;
 }
 
+//请求允许录音
++ (void)askForRecord
+{
+    if ([[[UIDevice currentDevice]systemVersion]floatValue] >= 7.0) {
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        AVAudioSessionRecordPermission state = [audioSession recordPermission];
+        if(state<AVAudioSessionRecordPermissionGranted){
+            [audioSession performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) {
+                if (granted) {
+                    NSLog(@"用户允许录音");
+                } else {
+                    NSLog(@"用户不允许录音");
+                    BlockAlertView *alert = [[BlockAlertView alloc] initWithTitle:nil message:@"请在iPhone的“设置-隐私-麦克风”选项中，允许我们使用你的麦克风。" actionBlock:^(NSInteger buttonIndex) {
+                        if(buttonIndex==1){
+                            [[UIApplication sharedApplication] openURL:
+                             [NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                        }
+                    } cancelButtonTitle:@"以后再说" otherButtonTitles:@"立即开启", nil];
+                    [alert show];
+                }
+            }];
+        }
+    }
+}
+
 //开始录音
 - (void)startRecord
 {

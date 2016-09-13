@@ -19,15 +19,22 @@
 
 @implementation BaseViewController
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NotiDidLogin object:nil];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogin) name:NotiDidLogin object:nil];
     
     if([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]){
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
+    
+    [self setFd_prefersNavigationBarHidden:YES];
+    [self setFd_interactivePopDisabled:NO];
 }
 
 - (void)didLogin
@@ -52,6 +59,8 @@
         [self refreshAction];
         needRefresh = NO;
     }
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
